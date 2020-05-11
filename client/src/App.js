@@ -23,6 +23,8 @@ function App() {
     files: undefined,
   });
 
+  const test = "this is a test."
+
   const getEvents = async () => {
     const allEvents = await fetch('http://localhost:3001/api/events');
     return allEvents.json();
