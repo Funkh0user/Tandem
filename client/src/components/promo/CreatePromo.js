@@ -42,7 +42,7 @@ const CreatePromo = ({
 
   if (!expanded) {
     return (
-      <div>
+      <div className="create-promo closed">
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -58,7 +58,7 @@ const CreatePromo = ({
     );
   } else {
     return (
-      <div>
+      <div className="create-promo open">
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>

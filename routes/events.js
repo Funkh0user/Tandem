@@ -1,13 +1,14 @@
 const express = require('express');
-const Events = require('../models/events');
-const router = express.Router();
+const Events = require('../models/events'); // import mongoDB model (schema)
+const router = express.Router(); 
 
 //post new event
 router.post('/', async (req, res) => {
   const events = await Events.findOne({ name: req.body.name });
   if (events) {
     return res.status(400).json({ msg: 'Event already exists.' });
-  } else {
+  } 
+  try {
     const newEvent = new Events({
       name: req.body.name,
       type: req.body.type,
@@ -20,16 +21,22 @@ router.post('/', async (req, res) => {
       description: req.body.description,
       pictures: req.body.pictures,
     });
-    //TO-DO add error handling..try/catch
     newEvent.save();
+    res.status(200).json(newEvent);
+  } catch (err) {
+    console.err(err.msg)
+    res.status(500).send('Server error.')
   }
-  res.status(200).json({ msg: 'post request made' });
 });
 
 router.get('/', async (req, res) => {
-  //TO-DO add error handling try/catch stuff
-  const allEvents = await Events.find({});
-  res.status(200).json(allEvents);
+  try {
+    const allEvents = await Events.find({});
+    res.status(200).json(allEvents);
+  } catch(err) {
+    console.err(err.msg)
+    res.status(500).send('Server error.')
+  }
 });
 
 module.exports = router;
