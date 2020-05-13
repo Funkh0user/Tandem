@@ -2,13 +2,19 @@ const mongoose = require('mongoose');
 const config = require('config');
 const db = config.get('mongoURI');
 
+//import mongoURI and use it to connect to mongoDB atlas.
+
 const connectDB = async () => {
   try {
-    mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true  });
-    console.log("mongoDB connected")
+    await mongoose.connect(db, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('mongoDB connected');
   } catch (err) {
-    console.log('There was an error connecting to mongoDB', err);
+    console.err('There was an error connecting to mongoDB', err.messsage);
+    process.exit(1)
   }
 };
 
-module.exports = connectDB
+module.exports = connectDB;

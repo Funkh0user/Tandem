@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FaCaretDown } from 'react-icons/fa';
 import { FaCaretUp } from 'react-icons/fa';
 
+//drop down menu option with input for image urls to create slideshow 
+
 const FormOptionsGroup = ({ promoState, handlePromoStateChange }) => {
   const [showPictures, setShowPictures] = useState(null);
 

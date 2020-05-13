@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import './tailwind.generated.css';
-import 'react-quill/dist/quill.snow.css';
-import './App.css';
 import CreatePromo from './components/promo/CreatePromo';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from "./components/SearchEvents"
+import './tailwind.generated.css';
+import 'react-quill/dist/quill.snow.css';
+import './App.css';
 
-function App() {
+const App = () => {
+  //set initial createPromo widget state. 
+  //@TO-DO start using context api for global state management ASAP.
   const [allEvents, setAllEvents] = useState([]);
   const [promoState, setPromoState] = useState({
     name: '',
@@ -20,34 +22,43 @@ function App() {
     location: '',
     description: '',
     pictures: '',
-    files: undefined,
+    files: null,
   });
 
-  const test = "this is a test."
-
+  //defines our backend api call to get all our events
   const getEvents = async () => {
-    const allEvents = await fetch('http://localhost:3001/api/events');
-    return allEvents.json();
+    try {
+      const allTheEvents = await fetch('http://localhost:3001/api/events');
+      return allTheEvents.json();
+    } catch(error) {
+      console.error(error.message)
+    }
   };
 
+  //wrapper function for add a new event to allEvents
   const handleSetAllEvents = (newEvent) => {
     setAllEvents([...allEvents, newEvent]);
   };
 
+  //wrapper function for updating controlled form state
   const handlePromoStateChange = (e) => {
-    console.log("heres the name", e.target.name)
-    console.log("heres the value", e.target.value)
     setPromoState({ ...promoState, [e.target.name]: e.target.value });
   }
 
+  //wrapper function for handling the react-quill rich-text input specifically
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
 
+  //call getEvents whenever app is rendered. 
   useEffect(() => {
     getEvents().then((result) => {
       //TO-DO include some validation / error handling here
       if (result.length > 0) {
-        setAllEvents([...allEvents, ...result]);
+        try {
+          setAllEvents([...allEvents, ...result]);
+        } catch(error) {
+          console.log(error.message)
+        }
       }
     });
   }, []);

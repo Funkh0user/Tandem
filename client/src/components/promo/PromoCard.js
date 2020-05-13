@@ -5,7 +5,10 @@ import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 import ImageCarousel from '../ImageCarousel';
 
+//view for data saved in CreatePromo
+
 const PromoCard = ({ promoState }) => {
+  //destructure promoState prop
   const {
     name,
     type,
@@ -22,8 +25,8 @@ const PromoCard = ({ promoState }) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const expand = () => setIsExpanded(!isExpanded);
-  
-  //handle incoming string of different links
+
+  //handle incoming string of different image links
   const picturesArr = pictures
     .replace(/\n/g, ' ')
     .split(' ')
@@ -31,7 +34,7 @@ const PromoCard = ({ promoState }) => {
 
   const formattedTime = new Date(startDate).toDateString();
 
-  
+  //if the promoCard is not expanded
   if (!isExpanded) {
     return (
       <div className='p-5'>
@@ -40,7 +43,9 @@ const PromoCard = ({ promoState }) => {
             <p>{name}</p>
           </h1>
           <img src={picturesArr[0]} className='w-8/12 mx-auto m-2' />
-          <span className='text-xs text-white p-2 bg-blue-400 rounded'>{type}</span>
+          <span className='text-xs text-white p-2 bg-blue-400 rounded'>
+            {type}
+          </span>
           <div className='flex justify-center'>
             <div className='p-5'>
               <AiOutlineCalendar className='text-4xl mx-auto text-blue-400' />
@@ -61,13 +66,14 @@ const PromoCard = ({ promoState }) => {
               __html: description.substring(0, 50) + '...',
             }}
           ></div>
-            <button className='p-1 text-4xl text-blue-400' onClick={expand}>
-              {isExpanded ? <GoChevronUp /> : <GoChevronDown />}
-            </button>
+          <button className='p-1 text-4xl text-blue-400' onClick={expand}>
+            {isExpanded ? <GoChevronUp /> : <GoChevronDown />}
+          </button>
         </div>
       </div>
     );
   } else if (isExpanded && promoState.description) {
+    //if the promoCard is expanded
     return (
       <div className='m-5'>
         <div className='flex-col mx-auto m-5 rounded bg-white shadow-lg text-center'>
@@ -80,7 +86,9 @@ const PromoCard = ({ promoState }) => {
           <div className='mx-auto'>
             <ImageCarousel picturesArr={picturesArr} />
           </div>
-          <span className='text-xs text-white p-2 bg-blue-400 rounded'>{type}</span>
+          <span className='text-xs text-white p-2 bg-blue-400 rounded'>
+            {type}
+          </span>
           <div className='flex justify-around items-center text-center'>
             <div className='p-2 flex flex-col items-center'>
               <AiOutlineCalendar className='text-4xl text-blue-400' />
@@ -88,8 +96,7 @@ const PromoCard = ({ promoState }) => {
                 {formattedTime}
               </p>
             </div>
-            <div className='p-1'>
-            </div>
+            <div className='p-1'></div>
             <div className='p-2 flex flex-col items-center'>
               <RiMapPin2Line className='text-4xl text-blue-400' />
               <p className='text-sm font-hairline text-opacity-50'>
@@ -102,12 +109,12 @@ const PromoCard = ({ promoState }) => {
             className='break-words m-2 p-2 text-center'
             dangerouslySetInnerHTML={{ __html: description }}
           ></div>
-            <button
-              className='p-2 text-center text-4xl text-blue-400'
-              onClick={expand}
-            >
-              {isExpanded ? <GoChevronUp /> : <GoChevronDown />}
-            </button>
+          <button
+            className='p-2 text-center text-4xl text-blue-400'
+            onClick={expand}
+          >
+            {isExpanded ? <GoChevronUp /> : <GoChevronDown />}
+          </button>
         </div>
       </div>
     );

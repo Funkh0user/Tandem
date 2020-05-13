@@ -3,8 +3,11 @@ import ReactQuill from 'react-quill';
 import PropTypes from 'prop-types';
 
 /*
- * Simple editor component that takes placeholder text as a prop
+ * Simple richText editor component that takes placeholder text as a prop
  */
+
+ //copied from https://codepen.io/alexkrolick/pen/xgyOXQ?editors=0010#0
+
 class Editor extends React.Component {
   constructor(props) {
     super(props);
@@ -30,7 +33,7 @@ class Editor extends React.Component {
     return (
       <ReactQuill
         name='editor'
-        onChange={this.handleChange}
+        onChange={this.handleChange} // calls back to handleDescriptionChange from App.js
         value={this.state.editorHtml}
         modules={Editor.modules}
         formats={Editor.formats}

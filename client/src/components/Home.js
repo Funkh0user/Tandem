@@ -1,6 +1,9 @@
 import React from 'react';
 import PromoCard from './promo/PromoCard';
 
+
+//currently, returns a list of all saved events
+
 const Home = ({ allEvents }) => {
   return (
     <div className='w-full'>

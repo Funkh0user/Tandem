@@ -5,6 +5,8 @@ import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 import Editor from '../Editor';
 
+
+//destructure props passed into createPromo component
 const CreatePromo = ({
   promoState,
   handlePromoStateChange,
@@ -14,7 +16,8 @@ const CreatePromo = ({
   const [expanded, setExpanded] = useState(null);
   const showForms = () => setExpanded(!expanded);
   const history = useHistory();
-
+  
+  //posts data to server / mongoDB
   const saveEvent = async (data) => {
     const result = await fetch('http://localhost:3001/api/events', {
       method: 'POST',
@@ -32,14 +35,20 @@ const CreatePromo = ({
     }
   };
 
+  //
   const handleSubmit = (e) => {
+    //prevent default form behavior
     e.preventDefault();
+
+    //update mongoDB with new event
     saveEvent(promoState);
+    //update react state with new event. @TO-DO trigger front end state update with the above saveEvent() call ??
     handleSetAllEvents(promoState);
-    console.log(promoState);
+    //redirect to homepage
     history.push('/');
   };
 
+  //if the widget is not expanded...
   if (!expanded) {
     return (
       <div className="create-promo closed">
@@ -57,6 +66,7 @@ const CreatePromo = ({
       </div>
     );
   } else {
+    //when the widget is expanded
     return (
       <div className="create-promo open">
         <div className='w-full h-48 bg-green-400'>
@@ -193,10 +203,12 @@ const CreatePromo = ({
                   Description:
                 </label>
                 <div className='flex flex-col items-around justify-around flex-grow p-2'>
+                {/* React-Quill RichText editor */}
                   <Editor
                     handleDescriptionChange={handleDescriptionChange}
                     placeholder='Tell people about your event...'
                   />
+                  {/* Image links / slider option */}
                   <FormOptionsGroup
                     promoState={promoState}
                     handlePromoStateChange={handlePromoStateChange}

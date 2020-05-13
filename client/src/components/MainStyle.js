@@ -9,6 +9,7 @@ const MainStyle = ({ children }) => {
   const [selected, setSelected] = useState('');
 
   //styles the navigation menu button via selected variable inside ternary operations below
+  //@TO-DO sort of buggy, fails to update the color any time the page is redirected or any kind of navigation happens without a button / mouse click
   const handleClick = (e) => {
     setSelected(document.activeElement.name);
     switch (document.activeElement.name) {
@@ -27,6 +28,8 @@ const MainStyle = ({ children }) => {
   const [color, setColor] = useState('blue');
   const colorSelector = (value) => setColor(value);
 
+  //wrapper component with our bottom navigation bar. 
+  //@TO-DO refactor navigation component into seperate component / file
   return (
     <div className='w-full'>
       {children}

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+//mongoDB schema and Event model.
+
 const eventSchema = new mongoose.Schema({
     name: String,
     type: String,
