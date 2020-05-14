@@ -5,7 +5,6 @@ import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 import Editor from '../Editor';
 
-
 //destructure props passed into createPromo component
 const CreatePromo = ({
   promoState,
@@ -16,7 +15,7 @@ const CreatePromo = ({
   const [expanded, setExpanded] = useState(null);
   const showForms = () => setExpanded(!expanded);
   const history = useHistory();
-  
+
   //posts data to server / mongoDB
   const saveEvent = async (data) => {
     const result = await fetch('http://localhost:3001/api/events', {
@@ -30,6 +29,8 @@ const CreatePromo = ({
     });
     try {
       const newData = await result.json();
+      console.log('heres the newdata from the post request', newData);
+      return newData;
     } catch (err) {
       console.log('there was a problem saving this event.', err);
     }
@@ -37,21 +38,32 @@ const CreatePromo = ({
 
   //
   const handleSubmit = (e) => {
-    //prevent default form behavior
+    //prevent default form behavior.
     e.preventDefault();
-
-    //update mongoDB with new event
-    saveEvent(promoState);
-    //update react state with new event. @TO-DO trigger front end state update with the above saveEvent() call ??
-    handleSetAllEvents(promoState);
-    //redirect to homepage
-    history.push('/');
+    //update mongoDB with new event.
+    try {
+      saveEvent(promoState).then((result) => {
+        //update react state with new event if there is no duplicate event error.
+        if (!result.errorMsg) {
+          handleSetAllEvents(result);
+          //redirect to homepage
+          history.push('/');
+          //if theres an error, log it.
+        } else {
+          console.log(result.errorMsg);
+          return null
+        }
+      });
+      //if there is a mongoDB error, log it.
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //if the widget is not expanded...
   if (!expanded) {
     return (
-      <div className="create-promo closed">
+      <div className='create-promo closed'>
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -68,7 +80,7 @@ const CreatePromo = ({
   } else {
     //when the widget is expanded
     return (
-      <div className="create-promo open">
+      <div className='create-promo open'>
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -203,7 +215,7 @@ const CreatePromo = ({
                   Description:
                 </label>
                 <div className='flex flex-col items-around justify-around flex-grow p-2'>
-                {/* React-Quill RichText editor */}
+                  {/* React-Quill RichText editor */}
                   <Editor
                     handleDescriptionChange={handleDescriptionChange}
                     placeholder='Tell people about your event...'

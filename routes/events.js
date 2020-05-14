@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
   //check mongoDB for an event with the same name. if it exists, exit with 400 error
   const events = await Events.findOne({ name: req.body.name });
   if (events) {
-    return res.status(400).json({ msg: 'Event already exists.' });
+    return res.status(400).json({ errorMsg: 'Event already exists.' });
   } 
   //save event to mongoDB
   try {
@@ -26,22 +26,24 @@ router.post('/', async (req, res) => {
     });
     newEvent.save();
     res.status(200).json(newEvent);
-  } catch (error) {
-    console.error(error.message)
+  } catch(error) {
+    console.log(error)
     res.status(500).send('Server error.')
   }
 });
 
 //@Route  api/events 
-//@description  GET all events
+//@description  GET events
 
-router.get('/', async (req, res) => {
-  //get all events from mongoDB
+router.get('/:number', async (req, res) => {
+  const numberOfEventsToDisplay = req.params.number
+  //get events from mongoDB
   try {
     const allEvents = await Events.find({});
-    res.status(200).json(allEvents);
+    res.status(200).json(allEvents.slice(0, numberOfEventsToDisplay));
+    // res.status(200).json(allEvents);
   } catch(error) {
-    console.error(error.message)
+    console.log(error)
     res.status(500).send('Server error.')
   }
 });
