@@ -20,7 +20,10 @@ const MainStyle = ({ children }) => {
         colorSelector('green');
         break;
       case 'search':
-        colorSelector('green');
+        colorSelector('orange');
+        break;
+      case 'social':
+        colorSelector('purple');
         break;
     }
   };
@@ -54,10 +57,10 @@ const MainStyle = ({ children }) => {
         </div>
         <div
           className={
-            selected === 'chat' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
+            selected === 'social' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
           }
         >
-          <Link name='chat' to='/chat' onClick={handleClick}>
+          <Link name='social' to='/social' onClick={handleClick}>
             <FiMessageSquare className={`text-${color}-400 text-4xl`} />
           </Link>
         </div>

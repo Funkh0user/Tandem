@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SearchEvents = () => {
+const Social = () => {
   const [eventSearchForm, setEventSearchForm] = useState({
     search: '',
   });
@@ -9,9 +9,9 @@ const SearchEvents = () => {
 
   return (
     <div className='w-full'>
-      <div className='bg-orange-400 h-48 grid grid-cols-1 md:grid-cols-3'>
+      <div className='bg-purple-400 h-48 grid grid-cols-1 md:grid-cols-3'>
         <div>
-          <h1 className='text-4xl text-white mt-10 ml-10'>Search Events</h1>
+          <h1 className='text-4xl text-white mt-10 ml-10'>Find Friends</h1>
         </div>
         <div className='flex md:flex-col sm:justify-center sm:items-center w-full justify-center items-center '>
           <form className='w-10/12 lg:w-full mx-auto flex'>
@@ -22,10 +22,10 @@ const SearchEvents = () => {
               value={eventSearchForm.search}
               onChange={handleEventSearch}
               className='w-11/12  lg:w-full mx-auto border-none leading-8'
-              placeholder='Enter the name of the event your looking for.'
+              placeholder="Enter someone's name."
             />
             <button
-              className='p-2 m-2 text-center text-white rounded bg-orange-500 hover:bg-orange-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
+              className='p-2 m-2 text-center text-white rounded bg-purple-500 hover:bg-purple-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
               type='submit'
             >
               Search
@@ -38,4 +38,4 @@ const SearchEvents = () => {
   );
 };
 
-export default SearchEvents;
+export default Social;

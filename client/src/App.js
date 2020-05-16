@@ -4,16 +4,16 @@ import CreatePromo from './components/promo/CreatePromo';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
+import Social from './components/Social'
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
+//@TO-DO start using context api for global state management ASAP.
 
 const App = () => {
-  //@TO-DO start using context api for global state management ASAP.
-
+  
   //set initial createPromo widget state.
   const [allEvents, setAllEvents] = useState([]);
-  const [eventsShowing, setEventsShowing] = useState(10);
   const [promoState, setPromoState] = useState({
     name: '',
     type: '',
@@ -27,34 +27,33 @@ const App = () => {
     files: null,
   });
 
-  //reducer function for handling lazy loading events state
-  const eventReducer = (state, action) => {
-    switch (action.type) {
-      case 'LOAD_NEXT_EVENTS':
-        return { ...state, events: state.events.concat(action.events) };///////////////////////////bug, infinitely adds events to the dom.
-      case 'LOADING_EVENTS':
-        return { ...state, loading: action.loading };
-      default:
-        return state;
-    }
+  // options for the IntersectionObserver constructor below
+  let options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 1.0,
   };
-  //initialize react useReducer hook with eventreducer, as well as the initial state of the object the reducer will operate on. (very similar to useState())
-  const [eventState, eventDispatch] = useReducer(eventReducer, {
-    loading: false,
-    events: [],
-  });
+  
+  let eventsToShow = 0
+
+  // instantiate intersection observer.
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      console.log(entry);
+      console.log(entry.isIntersecting);
+    });
+    eventsToShow += 4 
+    getEvents(eventsToShow);
+  }, options);
 
   //defines our backend api call to get events
   const getEvents = async (numberOfEvents) => {
-    eventDispatch({ type: 'LOADING_EVENTS', loading: true });
-    handleSetEventsShowing(10);
     try {
       const events = await fetch(
         `http://localhost:3001/api/events/${numberOfEvents}`
       );
       const newData = await events.json();
-      eventDispatch({ type: 'LOAD_NEXT_EVENTS', events: newData });//////////////////////////////////bug, infinitely adds events to the dom
-      eventDispatch({ type: 'LOADING_EVENTS', loading: false });
+      setAllEvents([...allEvents, ...newData]);
       return newData;
     } catch (error) {
       console.log(error);
@@ -63,12 +62,7 @@ const App = () => {
 
   //wrapper function to add a new event to allEvents
   const handleSetAllEvents = (newEvent) => {
-    setAllEvents(allEvents + newEvent);
-  };
-
-  //wrapper function for setting the number of events to display on the page
-  const handleSetEventsShowing = (newEvents) => {
-    setEventsShowing(eventsShowing + newEvents);
+    setAllEvents([...allEvents, newEvent]);
   };
 
   //wrapper function for updating controlled form state
@@ -80,49 +74,17 @@ const App = () => {
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
 
-  //options for the IntersectionObserver constructor below
-  let options = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 1.0,
-  };
-  //instantiate observer.
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      console.log(entry);
-      console.log(entry.isIntersecting);
-      handleSetEventsShowing(10);
-      getEvents(eventsShowing);
-    });
-  }, options);
-
-  console.log(typeof target);
-  console.log(eventState);
-  console.log(eventsShowing);
-
   useEffect(() => {
-    //load 10 events initially
-    getEvents(eventsShowing).then((result) => {
-      if (result.length > 0) {
-        try {
-          setAllEvents([...allEvents, ...result]);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      //set observer to observe the bottom boundary element on our page. when it intersects with the viewport, run handleSetEventsShowing and getevents(eventsShowing)
-      observer.observe(document.querySelector('#bottom-boundary'));
-    });
+    //load events
+    observer.observe(document.querySelector('#bottom-boundary'));
   }, []);
 
   return (
     <Router>
       <MainStyle>
-        {console.log('app re rendered')}
         <Switch>
           <Route exact path='/'>
-          {/* allEvents is from our useState hook, eventState.events comes from our useReducer hook, make a choice  */}
-            <Home allEvents={allEvents} eventState={eventState.events}/>
+            <Home allEvents={allEvents} />
           </Route>
           <Route exact path='/create'>
             <CreatePromo
@@ -134,6 +96,9 @@ const App = () => {
           </Route>
           <Route path='/search'>
             <SearchEvents />
+          </Route>
+          <Route path='/social'>
+            <Social />
           </Route>
         </Switch>
       </MainStyle>

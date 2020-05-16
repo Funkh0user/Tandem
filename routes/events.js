@@ -40,7 +40,11 @@ router.get('/:number', async (req, res) => {
   //get events from mongoDB
   try {
     const allEvents = await Events.find({});
-    res.status(200).json(allEvents.slice(0, numberOfEventsToDisplay));
+    if(numberOfEventsToDisplay === "all") {
+      res.status(200).json(allEvents.slice(0, allEvents.length - 1));
+    } else {
+      res.status(200).json(allEvents.slice(0, numberOfEventsToDisplay));
+    }
     // res.status(200).json(allEvents);
   } catch(error) {
     console.log(error)

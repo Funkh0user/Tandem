@@ -50,7 +50,7 @@ const CreatePromo = ({
           history.push('/');
           //if theres an error, log it.
         } else {
-          console.log(result.errorMsg);
+          console.log("there was an error", result.errorMsg);
           return null
         }
       });
@@ -75,6 +75,8 @@ const CreatePromo = ({
             </button>
           </h2>
         </div>
+        <div id="bottom-boundary"></div>
+
       </div>
     );
   } else {
@@ -236,6 +238,7 @@ const CreatePromo = ({
             </div>
           </form>
         </div>
+        <div id="bottom-boundary"></div>
       </div>
     );
   }
