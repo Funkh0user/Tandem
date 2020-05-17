@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// import L from 'leaflet';
+import SimpleExample from "../SimpleExample"
+
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
 import { GoChevronDown } from 'react-icons/go';
@@ -16,7 +19,10 @@ const PromoCard = ({ promoState }) => {
     startTime,
     endDate,
     endTime,
-    location,
+    address,
+    city,
+    state,
+    postal,
     description,
     links,
     pictures,
@@ -25,6 +31,18 @@ const PromoCard = ({ promoState }) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const expand = () => setIsExpanded(!isExpanded);
+  
+  const [coords, setCoords] = useState({
+    lat: "",
+    lng: ""
+  })
+  const handleSetCoords = (newCoords) => {
+    setCoords(newCoords)
+  }
+
+  // const handleSetCoords = (e) => {
+  //   setCoords({[e.target.name]: e.target.value})
+  // }
 
   //handle incoming string of different image links
   const picturesArr = pictures
@@ -34,6 +52,27 @@ const PromoCard = ({ promoState }) => {
 
   const formattedTime = new Date(startDate).toDateString();
 
+
+  console.log("here is the address", address, city, state, postal )
+
+  const formattedFetch = `https://api.opencagedata.com/geocode/v1/json?q=${address.replace(" ", "%")}&key=8fae859ba07b40dc832602df7c8f85fd`
+  console.log(formattedFetch)
+
+  //need to make api call to convert location address into coordinates for leaflet maps. geonames api??
+  const getCoords = async () => {
+    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${address.replace(" ", "%")}%${city}%${state}&key=8fae859ba07b40dc832602df7c8f85fd`)
+    return await result.json()
+  }
+  useEffect(() => {
+    getCoords().then(result => {
+      if(result.results[0]) {
+
+        console.log(result.results[0].geometry)//////////////////////////////////////////////////////////////////////////////////////////
+        //set some state to these coords, pass into simpleExample.
+        handleSetCoords(result.results[0].geometry)
+      }
+    })
+  }, [])
   //if the promoCard is not expanded
   if (!isExpanded) {
     return (
@@ -56,7 +95,7 @@ const PromoCard = ({ promoState }) => {
             <div className='p-5'>
               <RiMapPin2Line className='text-4xl mx-auto text-blue-400' />
               <p className='text-xs font-hairline text-opacity-50 '>
-                {location}
+                {address}
               </p>
             </div>
           </div>
@@ -85,6 +124,7 @@ const PromoCard = ({ promoState }) => {
           </h1>
           <div className='mx-auto'>
             <ImageCarousel picturesArr={picturesArr} />
+            <SimpleExample coords={coords} />
           </div>
           <span className='text-xs text-white p-2 bg-blue-400 rounded'>
             {type}
@@ -100,7 +140,7 @@ const PromoCard = ({ promoState }) => {
             <div className='p-2 flex flex-col items-center'>
               <RiMapPin2Line className='text-4xl text-blue-400' />
               <p className='text-sm font-hairline text-opacity-50'>
-                {location}
+                {address}
               </p>
             </div>
           </div>

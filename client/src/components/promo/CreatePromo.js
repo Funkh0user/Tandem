@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import FormOptionsGroup from './FormOptionsGroup';
 import { GoChevronDown } from 'react-icons/go';
@@ -50,8 +50,8 @@ const CreatePromo = ({
           history.push('/');
           //if theres an error, log it.
         } else {
-          console.log("there was an error", result.errorMsg);
-          return null
+          console.log('there was an error', result.errorMsg);
+          return null;
         }
       });
       //if there is a mongoDB error, log it.
@@ -75,8 +75,7 @@ const CreatePromo = ({
             </button>
           </h2>
         </div>
-        <div id="bottom-boundary"></div>
-
+        <div id='bottom-boundary'></div>
       </div>
     );
   } else {
@@ -196,16 +195,57 @@ const CreatePromo = ({
                     />
                   </div>
                 </div>
-                <div className='md:flex justify-center'>
+                <div className='md:flex-col justify-center'>
                   <div className='flex flex-1 flex-col'>
-                    <label className='p-2' htmlFor='location'>
-                      Address:
+                    <label className='p-2' htmlFor='address'>
+                      Street Address:
                     </label>
-
                     <input
                       type='text'
-                      name='location'
-                      value={promoState.location}
+                      name='address'
+                      value={promoState.address}
+                      onChange={handlePromoStateChange}
+                      className='m-5 border border-solid bg-transparent leading-loose'
+                    />
+                  </div>
+                </div>
+                <div className='md:flex-col justify-center'>
+                  <div className='flex flex-1 flex-col'>
+                    <label className='p-2' htmlFor='city'>
+                      City:
+                    </label>
+                    <input
+                      type='text'
+                      name='city'
+                      value={promoState.city}
+                      onChange={handlePromoStateChange}
+                      className='m-5 border border-solid bg-transparent leading-loose'
+                    />
+                  </div>
+                </div>
+                <div className='md:flex-col justify-center'>
+                  <div className='flex flex-1 flex-col'>
+                    <label className='p-2' htmlFor='state'>
+                      State:
+                    </label>
+                    <input
+                      type='text'
+                      name='state'
+                      value={promoState.state}
+                      onChange={handlePromoStateChange}
+                      className='m-5 border border-solid bg-transparent leading-loose'
+                    />
+                  </div>
+                </div>
+                <div className='md:flex-col justify-center'>
+                  <div className='flex flex-1 flex-col'>
+                    <label className='p-2' htmlFor='postal'>
+                      Postal Code:
+                    </label>
+                    <input
+                      type='text'
+                      name='postal'
+                      value={promoState.postal}
                       onChange={handlePromoStateChange}
                       className='m-5 border border-solid bg-transparent leading-loose'
                     />
@@ -238,7 +278,7 @@ const CreatePromo = ({
             </div>
           </form>
         </div>
-        <div id="bottom-boundary"></div>
+        <div id='bottom-boundary'></div>
       </div>
     );
   }

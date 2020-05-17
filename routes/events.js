@@ -20,7 +20,10 @@ router.post('/', async (req, res) => {
       startTime: req.body.startTime,
       endDate: req.body.endDate,
       endTime: req.body.endTime,
-      location: req.body.location,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      postal: req.body.postal,
       description: req.body.description,
       pictures: req.body.pictures,
     });

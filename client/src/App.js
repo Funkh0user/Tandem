@@ -5,6 +5,7 @@ import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Social from './components/Social'
+import SimpleExample from "./components/SimpleExample"
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
@@ -21,7 +22,10 @@ const App = () => {
     startTime: '',
     endDate: '',
     endTime: '',
-    location: '',
+    address: '',
+    city: '',
+    state: '',
+    postal: '',
     description: '',
     pictures: '',
     files: null,

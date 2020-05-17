@@ -9,7 +9,10 @@ const eventSchema = new mongoose.Schema({
     startTime: String,
     endDate: String,
     endTime: String,
-    location: String,
+    address: String,
+    city: String,
+    state: String,
+    postal: String,
     description: String,
     pictures: String,
 })
