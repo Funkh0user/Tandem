@@ -55,18 +55,19 @@ const PromoCard = ({ promoState }) => {
 
   console.log("here is the address", address, city, state, postal )
 
-  const formattedFetch = `https://api.opencagedata.com/geocode/v1/json?q=${address.replace(" ", "%")}&key=8fae859ba07b40dc832602df7c8f85fd`
+  const formattedFetch = `https://api.opencagedata.com/geocode/v1/json?q=${ encodeURIComponent(address)}%${city}%${state}%${postal.toString()}&key=8fae859ba07b40dc832602df7c8f85fd`
   console.log(formattedFetch)
+
+  console.log(typeof postal)
 
   //need to make api call to convert location address into coordinates for leaflet maps. geonames api??
   const getCoords = async () => {
-    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${address.replace(" ", "%")}%${city}%${state}&key=8fae859ba07b40dc832602df7c8f85fd`)
+    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}%20${encodeURIComponent(city)}%20${encodeURIComponent(state)}%20${encodeURIComponent(postal)}&key=8fae859ba07b40dc832602df7c8f85fd`)
     return await result.json()
   }
   useEffect(() => {
     getCoords().then(result => {
       if(result.results[0]) {
-
         console.log(result.results[0].geometry)//////////////////////////////////////////////////////////////////////////////////////////
         //set some state to these coords, pass into simpleExample.
         handleSetCoords(result.results[0].geometry)
