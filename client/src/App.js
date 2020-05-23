@@ -44,9 +44,9 @@ const App = () => {
   const observer = new IntersectionObserver((entries) => {
     //for each element being observed (in this case, only 1, #bottom-boundary)....
     entries.forEach((entry) => {
-      console.log(entry);
+      // console.log(entry);
+      // console.log(entry.isIntersecting);
       //when the element intersects the viewport, get 6 more events from the server.
-      console.log(entry.isIntersecting);
       if(entry.isIntersecting) {
         eventsToShow += 6;
         getEvents(eventsToShow);
