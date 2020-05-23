@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PromoCard from './promo/PromoCard';
 
 //currently, returns a lazy-loaded list of all saved events
 const Home = ({ allEvents, eventStateEvents }) => {
   return (
-    <div className='w-full'>
+    <Fragment >
       <div className='bg-blue-400 h-48 flex'>
         <h1 className='text-4xl text-white ml-10 mt-10'>Whats New</h1>
       </div>
@@ -15,9 +15,10 @@ const Home = ({ allEvents, eventStateEvents }) => {
         {allEvents.map((event, index) => {
           return <PromoCard key={index} promoState={event} />;
         })}
+        <div id='bottom-boundary'></div>
+
       </div>
-      <div id='bottom-boundary'></div>
-    </div>
+    </Fragment>
   );
 };
 

@@ -2,8 +2,8 @@
 :root { 
   font-size: 16px;
   list-style-type: circle;
-
 }
+
 .leaflet-container {
   height: 200px;
   width: 100%;
@@ -13,7 +13,6 @@ body {
   background-color: #e0e0e0;
   margin-bottom: 100px;
 }
-
 
 .app {
   margin: 1rem 4rem;

@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Map, TileLayer, Marker, Popup } from "react-leaflet"
 
 
-class SimpleExample extends React.Component {
+class EventLocationMap extends React.Component {
     constructor(props) {
       super(props)
       this.state = {
@@ -32,4 +32,4 @@ class SimpleExample extends React.Component {
     }
   }
   
-export default SimpleExample  
+export default EventLocationMap  

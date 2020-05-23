@@ -4,15 +4,15 @@ import CreatePromo from './components/promo/CreatePromo';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
-import Social from './components/Social'
-import SimpleExample from "./components/SimpleExample"
+import Social from './components/Social';
+import SimpleExample from './components/EventLocationMap';
+import PromoState from './components/context/PromoContext/PromoState';
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
-//@TO-DO start using context api for global state management ASAP.
+// @TODO start using context api for global state management ASAP.
 
 const App = () => {
-  
   //set initial createPromo widget state.
   const [allEvents, setAllEvents] = useState([]);
   const [promoState, setPromoState] = useState({
@@ -34,20 +34,24 @@ const App = () => {
   // options for the IntersectionObserver constructor below
   let options = {
     root: null,
-    rootMargin: '0px',
-    threshold: 1.0,
+    rootMargin: '100px',
+    threshold: .0,
   };
-  
-  let eventsToShow = 0
+
+  let eventsToShow = 0;
 
   // instantiate intersection observer.
   const observer = new IntersectionObserver((entries) => {
+    //for each element being observed (in this case, only 1, #bottom-boundary)....
     entries.forEach((entry) => {
       console.log(entry);
+      //when the element intersects the viewport, get 6 more events from the server.
       console.log(entry.isIntersecting);
+      if(entry.isIntersecting) {
+        eventsToShow += 6;
+        getEvents(eventsToShow);
+      }
     });
-    eventsToShow += 4 
-    getEvents(eventsToShow);
   }, options);
 
   //defines our backend api call to get events
@@ -78,12 +82,15 @@ const App = () => {
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
 
-  useEffect(() => {
-    //load events
-    observer.observe(document.querySelector('#bottom-boundary'));
+    useEffect(() => {
+    //loads more events when viewport intersects with #bottom-boundary
+    // getEvents(4)
+    observer.observe(document.querySelector('#bottom-boundary'))
+    console.log("tigger")
   }, []);
 
   return (
+    // <PromoState>
     <Router>
       <MainStyle>
         <Switch>
@@ -107,6 +114,7 @@ const App = () => {
         </Switch>
       </MainStyle>
     </Router>
+    // </PromoState>
   );
 };
 

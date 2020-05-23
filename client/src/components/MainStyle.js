@@ -31,11 +31,12 @@ const MainStyle = ({ children }) => {
   const [color, setColor] = useState('blue');
   const colorSelector = (value) => setColor(value);
 
-  //wrapper component with our bottom navigation bar. 
+  //wrapper component with our bottom navigation bar.
   //@TO-DO refactor navigation component into seperate component / file
   return (
     <div className='w-full'>
       {children}
+      <div id='bottom-boundary'></div>
       <nav className='flex justify-around w-full bg-white shadow-lg fixed bottom-0 right-0'>
         <div
           className={

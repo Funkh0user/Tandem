@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
-// import L from 'leaflet';
-import SimpleExample from "../SimpleExample"
-
+import React, { useState, useEffect, useContext } from 'react';
+import EventLocationMap from "../EventLocationMap"
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
-import { GoChevronDown } from 'react-icons/go';
-import { GoChevronUp } from 'react-icons/go';
+import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import ImageCarousel from '../ImageCarousel';
-
-//view for data saved in CreatePromo
+// import promoContext from '../context/PromoContext/PromoContext'
 
 const PromoCard = ({ promoState }) => {
   //destructure promoState prop
@@ -29,6 +25,10 @@ const PromoCard = ({ promoState }) => {
     files,
   } = promoState;
 
+  // const testContext = useContext(promoContext)
+
+  // console.log(testContext)
+
   const [isExpanded, setIsExpanded] = useState(false);
   const expand = () => setIsExpanded(!isExpanded);
   
@@ -40,10 +40,6 @@ const PromoCard = ({ promoState }) => {
     setCoords(newCoords)
   }
 
-  // const handleSetCoords = (e) => {
-  //   setCoords({[e.target.name]: e.target.value})
-  // }
-
   //handle incoming string of different image links
   const picturesArr = pictures
     .replace(/\n/g, ' ')
@@ -52,23 +48,15 @@ const PromoCard = ({ promoState }) => {
 
   const formattedTime = new Date(startDate).toDateString();
 
-
-  console.log("here is the address", address, city, state, postal )
-
-  const formattedFetch = `https://api.opencagedata.com/geocode/v1/json?q=${ encodeURIComponent(address)}%${city}%${state}%${postal.toString()}&key=8fae859ba07b40dc832602df7c8f85fd`
-  console.log(formattedFetch)
-
-  console.log(typeof postal)
-
-  //need to make api call to convert location address into coordinates for leaflet maps. geonames api??
+  //need to make api call to opencagedata to convert location address into coordinates for leaflet maps.
   const getCoords = async () => {
-    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}%20${encodeURIComponent(city)}%20${encodeURIComponent(state)}%20${encodeURIComponent(postal)}&key=8fae859ba07b40dc832602df7c8f85fd`)
+    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}%20${encodeURIComponent(city)}%20${encodeURIComponent(state)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`)
     return await result.json()
   }
   useEffect(() => {
     getCoords().then(result => {
       if(result.results[0]) {
-        console.log(result.results[0].geometry)//////////////////////////////////////////////////////////////////////////////////////////
+        console.log(result.results[0].geometry)
         //set some state to these coords, pass into simpleExample.
         handleSetCoords(result.results[0].geometry)
       }
@@ -125,7 +113,7 @@ const PromoCard = ({ promoState }) => {
           </h1>
           <div className='mx-auto'>
             <ImageCarousel picturesArr={picturesArr} />
-            <SimpleExample coords={coords} />
+            <EventLocationMap coords={coords} />
           </div>
           <span className='text-xs text-white p-2 bg-blue-400 rounded'>
             {type}
