@@ -23,6 +23,7 @@ const PromoCard = ({ promoState }) => {
     links,
     pictures,
     files,
+    startDateTime
   } = promoState;
 
   // const testContext = useContext(promoContext)
@@ -46,7 +47,7 @@ const PromoCard = ({ promoState }) => {
     .split(' ')
     .filter((picture) => picture !== '');
 
-  const formattedTime = new Date(startDate).toDateString();
+  const formattedTime = new Date(startDateTime).toLocaleDateString();
 
   //need to make api call to opencagedata to convert location address into coordinates for leaflet maps.
   const getCoords = async () => {
@@ -56,8 +57,7 @@ const PromoCard = ({ promoState }) => {
   useEffect(() => {
     getCoords().then(result => {
       if(result.results[0]) {
-        console.log(result.results[0].geometry)
-        //set some state to these coords, pass into simpleExample.
+        //set some state to these coords, pass into eventLocationMap.
         handleSetCoords(result.results[0].geometry)
       }
     })

@@ -6,6 +6,7 @@ const router = express.Router();
 //@description    POST new event 
 router.post('/', async (req, res) => {
   //check mongoDB for an event with the same name. if it exists, exit with 400 error
+  console.log(req.body)
   const events = await Events.findOne({ name: req.body.name });
   if (events) {
     return res.status(400).json({ errorMsg: 'Event already exists.' });
@@ -18,8 +19,10 @@ router.post('/', async (req, res) => {
       description: req.body.description,
       startDate: req.body.startDate,
       startTime: req.body.startTime,
+      startDateTime: req.body.startDateTime,
       endDate: req.body.endDate,
       endTime: req.body.endTime,
+      endDateTime: req.body.endDateTime,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,

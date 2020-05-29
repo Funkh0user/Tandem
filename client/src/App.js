@@ -5,12 +5,11 @@ import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
-import SimpleExample from './components/EventLocationMap';
-import PromoState from './components/context/PromoContext/PromoState';
+import PromoState from './components/context/PromoContext/PromoState'; // promo global state management via context api. a work in progress.
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
-// @TODO start using context api for global state management ASAP.
+// TODO start using context api for global state management ASAP.
 
 const App = () => {
   //set initial createPromo widget state.
@@ -20,14 +19,16 @@ const App = () => {
     type: '',
     startDate: '',
     startTime: '',
+    startDateTime: '', // TODO update form component to set this property
     endDate: '',
     endTime: '',
+    endDateTime: '', // TODO update form component to set this property
     address: '',
     city: '',
     state: '',
     postal: '',
     description: '',
-    pictures: '',
+    pictures: '', // TODO change to an array. modify mongoDB schema, and related code that parses the current data structure (primitive, string)
     files: null,
   });
 
@@ -35,7 +36,7 @@ const App = () => {
   let options = {
     root: null,
     rootMargin: '100px',
-    threshold: .0,
+    threshold: 0.0,
   };
 
   let eventsToShow = 0;
@@ -47,7 +48,7 @@ const App = () => {
       // console.log(entry);
       // console.log(entry.isIntersecting);
       //when the element intersects the viewport, get 6 more events from the server.
-      if(entry.isIntersecting) {
+      if (entry.isIntersecting) {
         eventsToShow += 6;
         getEvents(eventsToShow);
       }
@@ -78,15 +79,27 @@ const App = () => {
     setPromoState({ ...promoState, [e.target.name]: e.target.value });
   };
 
+  //wrapper function to set an iso 8601 / rfc 3339 compliant date-time.
+  const handleSetDateTime = () => {
+    setPromoState({
+      ...promoState,
+      startDateTime: new Date(
+        promoState.startDate + ' ' + promoState.startTime
+      ).toISOString(),
+      endDateTime: new Date(
+        promoState.endDate + ' ' + promoState.endTime
+      ).toISOString(),
+    });
+  };
+
   //wrapper function for handling the react-quill rich-text input specifically
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
 
-    useEffect(() => {
+  useEffect(() => {
+    console.log(promoState);
     //loads more events when viewport intersects with #bottom-boundary
-    // getEvents(4)
-    observer.observe(document.querySelector('#bottom-boundary'))
-    console.log("tigger")
+    observer.observe(document.querySelector('#bottom-boundary'));
   }, []);
 
   return (
@@ -103,6 +116,7 @@ const App = () => {
               handlePromoStateChange={handlePromoStateChange}
               handleDescriptionChange={handleDescriptionChange}
               handleSetAllEvents={handleSetAllEvents}
+              handleSetDateTime={handleSetDateTime}
             />
           </Route>
           <Route path='/search'>

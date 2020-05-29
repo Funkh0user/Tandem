@@ -11,6 +11,7 @@ const CreatePromo = ({
   handlePromoStateChange,
   handleDescriptionChange,
   handleSetAllEvents,
+  handleSetDateTime
 }) => {
   const [expanded, setExpanded] = useState(null);
   const showForms = () => setExpanded(!expanded);
@@ -29,15 +30,13 @@ const CreatePromo = ({
     });
     try {
       const newData = await result.json();
-      console.log('heres the newdata from the post request', newData);
       return newData;
-    } catch (err) {
-      console.log('there was a problem saving this event.', err);
+    } catch (error) {
+      console.log('there was a problem saving this event.', error);
     }
   };
 
-  //
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     //prevent default form behavior.
     e.preventDefault();
     //update mongoDB with new event.
@@ -64,6 +63,7 @@ const CreatePromo = ({
   if (!expanded) {
     return (
       <div className='create-promo closed'>
+        {/* TODO refactor to pageHeader component with headerText prop */}
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -82,6 +82,7 @@ const CreatePromo = ({
     //when the widget is expanded
     return (
       <div className='create-promo open'>
+        {/* TODO refactor to pageHeader component with headerText prop */}
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -270,6 +271,7 @@ const CreatePromo = ({
                   <button
                     className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
                     type='submit'
+                    onClick={handleSetDateTime}
                   >
                     Create
                   </button>
