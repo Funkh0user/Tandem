@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import EventLocationMap from "../EventLocationMap"
+import EventLocationMap from '../EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
 import { GoChevronDown, GoChevronUp } from 'react-icons/go';
@@ -22,8 +22,9 @@ const PromoCard = ({ promoState }) => {
     description,
     links,
     pictures,
+    // picturesArr,
     files,
-    startDateTime
+    startDateTime,
   } = promoState;
 
   // const testContext = useContext(promoContext)
@@ -32,36 +33,44 @@ const PromoCard = ({ promoState }) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const expand = () => setIsExpanded(!isExpanded);
-  
-  const [coords, setCoords] = useState({
-    lat: "",
-    lng: ""
-  })
-  const handleSetCoords = (newCoords) => {
-    setCoords(newCoords)
-  }
 
-  //handle incoming string of different image links
-  const picturesArr = pictures
-    .replace(/\n/g, ' ')
-    .split(' ')
-    .filter((picture) => picture !== '');
+  const [coords, setCoords] = useState({
+    lat: '',
+    lng: '',
+  });
+
+  const handleSetCoords = (newCoords) => {
+    setCoords(newCoords);
+  };
 
   const formattedTime = new Date(startDateTime).toLocaleDateString();
 
+  const picturesArr = pictures
+  .replace(/\n/g, ' ')
+  .split(' ')
+  .filter((picture) => picture !== '');
+
   //need to make api call to opencagedata to convert location address into coordinates for leaflet maps.
   const getCoords = async () => {
-    const result = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}%20${encodeURIComponent(city)}%20${encodeURIComponent(state)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`)
-    return await result.json()
-  }
+    const result = await fetch(
+      `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+        address
+      )}%20${encodeURIComponent(city)}%20${encodeURIComponent(
+        state
+      )}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
+    );
+    return await result.json();
+  };
+
   useEffect(() => {
-    getCoords().then(result => {
-      if(result.results[0]) {
+    getCoords().then((result) => {
+      if (result.results[0]) {
         //set some state to these coords, pass into eventLocationMap.
-        handleSetCoords(result.results[0].geometry)
+        handleSetCoords(result.results[0].geometry);
       }
-    })
-  }, [])
+    });
+  }, []);
+
   //if the promoCard is not expanded
   if (!isExpanded) {
     return (
@@ -128,9 +137,7 @@ const PromoCard = ({ promoState }) => {
             <div className='p-1'></div>
             <div className='p-2 flex flex-col items-center'>
               <RiMapPin2Line className='text-4xl text-blue-400' />
-              <p className='text-sm font-hairline text-opacity-50'>
-                {address}
-              </p>
+              <p className='text-sm font-hairline text-opacity-50'>{address}</p>
             </div>
           </div>
 

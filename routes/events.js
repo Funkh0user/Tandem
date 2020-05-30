@@ -29,6 +29,7 @@ router.post('/', async (req, res) => {
       postal: req.body.postal,
       description: req.body.description,
       pictures: req.body.pictures,
+      picturesArr: req.body.picturesArr
     });
     newEvent.save();
     res.status(200).json(newEvent);

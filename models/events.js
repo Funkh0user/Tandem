@@ -17,6 +17,7 @@ const eventSchema = new mongoose.Schema({
     postal: String,
     description: String,
     pictures: String,
+    picturesArr: Array
 })
 
 const Event = mongoose.model("Event", eventSchema)

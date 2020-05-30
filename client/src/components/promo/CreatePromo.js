@@ -11,7 +11,8 @@ const CreatePromo = ({
   handlePromoStateChange,
   handleDescriptionChange,
   handleSetAllEvents,
-  handleSetDateTime
+  handleSetDateTime,
+  // handleSetPicturesArray,
 }) => {
   const [expanded, setExpanded] = useState(null);
   const showForms = () => setExpanded(!expanded);
@@ -36,7 +37,13 @@ const CreatePromo = ({
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleClick = () => {
+    console.log('trigger');
+    // handleSetPicturesArray()///// TODO why does one or the other fire but not both?
+    handleSetDateTime(); //// TODO why does one or the other fire but not both?
+  };
+
+  const handleSubmit = (e) => {
     //prevent default form behavior.
     e.preventDefault();
     //update mongoDB with new event.
@@ -58,6 +65,10 @@ const CreatePromo = ({
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    console.log(promoState);
+  }, []);
 
   //if the widget is not expanded...
   if (!expanded) {
@@ -271,7 +282,7 @@ const CreatePromo = ({
                   <button
                     className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
                     type='submit'
-                    onClick={handleSetDateTime}
+                    onClick={handleClick}
                   >
                     Create
                   </button>

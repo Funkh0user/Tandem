@@ -19,16 +19,17 @@ const App = () => {
     type: '',
     startDate: '',
     startTime: '',
-    startDateTime: '', // TODO update form component to set this property
+    startDateTime: '',
     endDate: '',
     endTime: '',
-    endDateTime: '', // TODO update form component to set this property
+    endDateTime: '',
     address: '',
     city: '',
     state: '',
     postal: '',
     description: '',
     pictures: '', // TODO change to an array. modify mongoDB schema, and related code that parses the current data structure (primitive, string)
+    picturesArr: [],
     files: null,
   });
 
@@ -81,6 +82,7 @@ const App = () => {
 
   //wrapper function to set an iso 8601 / rfc 3339 compliant date-time.
   const handleSetDateTime = () => {
+    console.log('trigger setDateTime');
     setPromoState({
       ...promoState,
       startDateTime: new Date(
@@ -92,14 +94,27 @@ const App = () => {
     });
   };
 
+  const handleSetPicturesArray = () => {
+    //format string
+    const picturesArr = promoState.pictures
+      .replace(/\n/g, ' ')
+      .split(' ')
+      .filter((picture) => picture !== '');
+    setPromoState({ ...promoState, picturesArr: picturesArr });
+  };
+
   //wrapper function for handling the react-quill rich-text input specifically
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
 
-  useEffect(() => {
+  useEffect( () => {
     console.log(promoState);
+  })
+    
+  useEffect(() => {
     //loads more events when viewport intersects with #bottom-boundary
     observer.observe(document.querySelector('#bottom-boundary'));
+    // TODO set up observer.unobserve
   }, []);
 
   return (
@@ -117,6 +132,7 @@ const App = () => {
               handleDescriptionChange={handleDescriptionChange}
               handleSetAllEvents={handleSetAllEvents}
               handleSetDateTime={handleSetDateTime}
+              // handleSetPicturesArray={handleSetPicturesArray}
             />
           </Route>
           <Route path='/search'>
