@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect} from 'react';
 import EventLocationMap from '../EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
@@ -11,19 +11,19 @@ const PromoCard = ({ promoState }) => {
   const {
     name,
     type,
-    startDate,
-    startTime,
-    endDate,
-    endTime,
+    // startDate,
+    // startTime,
+    // endDate,
+    // endTime,
     address,
     city,
     state,
     postal,
     description,
-    links,
+    // links,
     pictures,
     // picturesArr,
-    files,
+    // files,
     startDateTime,
   } = promoState;
 

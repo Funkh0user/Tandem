@@ -5,9 +5,9 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 //returns the image carousel component by mapping an array of pictures passed in as a prop.
 
 class ImageCarousel extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     return (

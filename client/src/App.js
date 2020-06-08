@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CreatePromo from './components/promo/CreatePromo';
 import MainStyle from './components/MainStyle';
@@ -40,7 +40,7 @@ const App = () => {
     threshold: 0.0,
   };
 
-  let eventsToShow = 0;
+  let eventsToShow = 0; // TODO change this to useRef()
 
   // instantiate intersection observer.
   const observer = new IntersectionObserver((entries) => {
@@ -109,7 +109,7 @@ const App = () => {
 
   useEffect( () => {
     console.log(promoState);
-  })
+  },[])
     
   useEffect(() => {
     //loads more events when viewport intersects with #bottom-boundary

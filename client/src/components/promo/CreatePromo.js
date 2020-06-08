@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import FormOptionsGroup from './FormOptionsGroup';
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 import Editor from '../Editor';
-
+  
 //destructure props passed into createPromo component
 const CreatePromo = ({
   promoState,
@@ -16,7 +16,7 @@ const CreatePromo = ({
 }) => {
   const [expanded, setExpanded] = useState(null);
   const showForms = () => setExpanded(!expanded);
-  const history = useHistory();
+  // let history = useHistory();
 
   //posts data to server / mongoDB
   const saveEvent = async (data) => {
@@ -53,7 +53,7 @@ const CreatePromo = ({
         if (!result.errorMsg) {
           handleSetAllEvents(result);
           //redirect to homepage
-          history.push('/');
+          // history.push('/');
           //if theres an error, log it.
         } else {
           console.log('there was an error', result.errorMsg);
@@ -66,14 +66,14 @@ const CreatePromo = ({
     }
   };
 
-  useEffect(() => {
-    console.log(promoState);
-  }, []);
+  // useEffect(() => {
+  //   console.log(promoState);
+  // }, []);
 
   //if the widget is not expanded...
   if (!expanded) {
     return (
-      <div className='create-promo closed'>
+      <div className='create-promo closed' data-cy="closed">
         {/* TODO refactor to pageHeader component with headerText prop */}
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
@@ -81,7 +81,7 @@ const CreatePromo = ({
         <div className='w-10/12 md:w-10/12 lg:w-6/12 rounded-md mt-5 mx-auto bg-green-400 shadow-lg'>
           <h2 className='text-center text-3xl p-5 text-white'>
             <p>Create Promo</p>
-            <button className='text-2xl' onClick={showForms}>
+            <button data-cy='toggle-open' className='text-2xl' onClick={showForms}>
               <GoChevronDown style={{ color: 'white' }} />
             </button>
           </h2>
@@ -92,7 +92,7 @@ const CreatePromo = ({
   } else {
     //when the widget is expanded
     return (
-      <div className='create-promo open'>
+      <div data-cy='open'>
         {/* TODO refactor to pageHeader component with headerText prop */}
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
@@ -124,6 +124,8 @@ const CreatePromo = ({
                       value={promoState.name}
                       onChange={handlePromoStateChange}
                       className='m-5 border border-solid bg-transparent leading-loose'
+                      autoFocus
+                      data-cy='event-name-input'
                     />
                   </div>
                   <div className='flex flex-col'>

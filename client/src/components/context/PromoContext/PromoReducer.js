@@ -4,6 +4,8 @@ export default (state, action) => {
         case "EXPAND_CARD":
             console.log("trigger")
             return {...state, isExpanded: !state.isExpanded}
+        default: 
+            return {...state}    
     }
 }
 

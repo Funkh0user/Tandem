@@ -23,6 +23,8 @@ const Nav = () => {
           case 'social':
             colorSelector('purple');
             break;
+          default:
+            colorSelector('blue');  
         }
       };
     

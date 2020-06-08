@@ -1,4 +1,4 @@
-import React, { useState, useContext, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import PromoContext from './PromoContext';
 import PromoReducer from './PromoReducer';
 

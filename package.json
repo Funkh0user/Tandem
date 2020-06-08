@@ -20,6 +20,7 @@
     "mongoose": "^5.9.12"
   },
   "devDependencies": {
-    "concurrently": "^5.2.0"
+    "concurrently": "^5.2.0",
+    "cypress": "^4.7.0"
   }
 }
