@@ -9,7 +9,7 @@ import Editor from '../Editor';
 const CreatePromo = ({
   promoState,
   handlePromoStateChange,
-  handleDescriptionChange,
+  handleDescriptionChange,  
   handleSetAllEvents,
   handleSetDateTime,
   // handleSetPicturesArray,

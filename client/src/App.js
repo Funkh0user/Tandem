@@ -1,6 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CreatePromo from './components/promo/CreatePromo';
+import CreatePromo_v2 from './components/promo/CreatePromo_v2';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
@@ -126,7 +127,7 @@ const App = () => {
             <Home allEvents={allEvents} />
           </Route>
           <Route exact path='/create'>
-            <CreatePromo
+            <CreatePromo_v2
               promoState={promoState}
               handlePromoStateChange={handlePromoStateChange}
               handleDescriptionChange={handleDescriptionChange}
