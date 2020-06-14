@@ -78,6 +78,7 @@ const App = () => {
 
   //wrapper function for updating controlled form state
   const handlePromoStateChange = (e) => {
+    console.log(e.target.value)
     setPromoState({ ...promoState, [e.target.name]: e.target.value });
   };
 
