@@ -1,12 +1,9 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import PromoState from '../context/PromoContext/PromoState';
-import { CSSTransitionGroup } from 'react-transition-group';
+import { Transition, SwitchTransition } from 'react-transition-group';
 import Editor from '../Editor';
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
-let step = 0;
-
 const CreatePromo_v2 = ({
   promoState,
   handlePromoStateChange,
@@ -20,180 +17,25 @@ const CreatePromo_v2 = ({
   const [step, setStep] = useState(0);
   const [isFirstStep, setIsFirstStep] = useState(true);
   const [isLastStep, setIsLastStep] = useState(false);
+  const [entered, setEntered] = useState(true);
 
-  // const zero = (
-  //   <div className=' flex flex-col justify-center align-center'>
-  //     <p className='p-16 text-center'>
-  //       What would you like to call your new event?
-  //     </p>
-  //     <label htmlFor='name' className='text-xs'></label>
-  //     <input
-  //       type='text'
-  //       id='name'
-  //       name='name'
-  //       className=' border-b-2'
-  //       value={promoState.name}
-  //       onChange={handlePromoStateChange}
-  //       placeholder='event name...'
-  //     />
-  //   </div>
-  // );
-  // const one = (
-  //   <div className=''>
-  //   <p>What kind of event will this be?</p>
-  //   <label className='p-2' htmlFor='type'>
-  //     Event Type:
-  //   </label>
-  //   <select
-  //     id='type'
-  //     name='type'
-  //     value={promoState.type}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   >
-  //     <option
-  //       name='volunteer work'
-  //       value='volunteer work'
-  //       onChange={handlePromoStateChange}
-  //     >
-  //       Volunteer work
-  //     </option>
-  //     <option
-  //       name='music event'
-  //       value='music event'
-  //       onChange={handlePromoStateChange}
-  //     >
-  //       Music Event
-  //     </option>
-  //   </select>
-  // </div>
-  // );
-  // const two = (
-  //   <div>
-  //   <p>Where will this event take place?</p>
-  //   <label className='p-2' htmlFor='address'>
-  //     Street Address:
-  //   </label>
-  //   <input
-  //     type='text'
-  //     name='address'
-  //     value={promoState.address}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  //   <label className='p-2' htmlFor='city'>
-  //     City:
-  //   </label>
-  //   <input
-  //     type='text'
-  //     name='city'
-  //     value={promoState.city}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  //   <label className='p-2' htmlFor='state'>
-  //     State:
-  //   </label>
-  //   <input
-  //     type='text'
-  //     name='state'
-  //     value={promoState.state}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  //   <label className='p-2' htmlFor='postal'>
-  //     Postal Code:
-  //   </label>
-  //   <input
-  //     type='text'
-  //     name='postal'
-  //     value={promoState.postal}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  // </div>
-  // );
-  // const three = (
-  //     <div className=''>
-  //       <p>When will this event happen?</p>
-  //       <label className='p-2' htmlFor='startDate'>
-  //         Start Date:
-  //       </label>
-  //       <input
-  //         type='date'
-  //         name='startDate'
-  //         value={promoState.startDate}
-  //         onChange={handlePromoStateChange}
-  //         className='m-5 border border-solid bg-transparent leading-loose'
-  //       />
-  //       <label className='p-2' htmlFor='startTime'>
-  //         Start Time:
-  //       </label>
-  //       <input
-  //         type='time'
-  //         name='startTime'
-  //         value={promoState.startTime}
-  //         onChange={handlePromoStateChange}
-  //         className='m-5 border border-solid bg-transparent leading-loose'
-  //       />
-  //     </div>
-  // );
-  // const four = (
-  //   <div className=''>
-  //   <p>When will the event end?</p>
-  //   <label className='p-2' htmlFor='endDate'>
-  //     End Date:
-  //   </label>
-  //   <input
-  //     type='date'
-  //     name='endDate'
-  //     value={promoState.endDate}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  //   <label className='p-2' htmlFor='endTime'>
-  //     End Time:
-  //   </label>
-  //   <input
-  //     type='time'
-  //     name='endTime'
-  //     value={promoState.endTime}
-  //     onChange={handlePromoStateChange}
-  //     className='m-5 border border-solid bg-transparent leading-loose'
-  //   />
-  // </div>
-  // );
-  // const five = (
-  //   <div>
-  //   <p>Describe your event.</p>
-  //   <Editor
-  //     handleDescriptionChange={handleDescriptionChange}
-  //     placeholder='Tell people about your event...'
-  //   />
-  // </div>
-  // );
-  // const six = (
-  //   <div>
-  //   <p>Links to Images of your event.</p>
-  //   <label htmlFor='pictures' className='text-xs'>
-  //     Image URLs:
-  //   </label>
-  //   <textarea
-  //     name='pictures'
-  //     id='pictures'
-  //     cols='10'
-  //     rows='10'
-  //     value={promoState.pictures}
-  //     onChange={handlePromoStateChange}
-  //     className='border border-solid w-full'
-  //     placeholder="Add as many URLs as you'd like, each on a new line."
-  //   ></textarea>
-  // </div>
-  // );
+  const defaultStyle = {
+    transition: `transform 200ms, opacity 200ms ease`,
+    opacity: 1,
+  };
 
-  // const [activeInput, setActiveInput] = useState([zero])
+  const transitionStyles = {
+    entering: { opacity: 0.5 },
+    entered: { opacity: 1 },
+    exiting: { opacity: 0.5 },
+    exited: { opacity: 0 },
+  };
+
+  // let step = 0;
+
   const handleSetStep = (e) => {
     e.preventDefault();
+    setEntered(!entered);
     if (e.target.name === 'nextButton') {
       console.log(step);
       step <= 5 ? setStep(step + 1) : setStep(step);
@@ -203,37 +45,12 @@ const CreatePromo_v2 = ({
       console.log(step);
     } else if (e.target.name === 'backButton') {
       console.log(step);
-      // step >= 1 ? (step -= 1) : (step = step);
       step >= 1 ? setStep(step - 1) : setStep(step);
+      // step >= 1 ? (step -= 1) : (step = step);
       step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
       step >= 5 ? setIsLastStep(true) : setIsLastStep(false);
-
       console.log(step);
     }
-
-    // switch(step) {
-    //   case 0:
-    //     setActiveInput([zero])
-    //     break
-    //   case 1:
-    //     setActiveInput([one])
-    //     break
-    //   case 2:
-    //     setActiveInput([two])
-    //     break
-    //   case 3:
-    //     setActiveInput([three])
-    //     break
-    //   case 4:
-    //     setActiveInput([four])
-    //     break
-    //   case 5:
-    //     setActiveInput([five])
-    //     break
-    //   case 6:
-    //     setActiveInput([six])
-    //     break
-    // }
   };
 
   //posts data to server / mongoDB
@@ -254,6 +71,7 @@ const CreatePromo_v2 = ({
       console.log('there was a problem saving this event.', error);
     }
   };
+
   const handleClick = () => {
     console.log('trigger');
     // handleSetPicturesArray()///// TODO why does one or the other fire but not both?
@@ -323,204 +141,257 @@ const CreatePromo_v2 = ({
             <div></div>
             <div className='w-full flex justify-center align-center'>
               <form className='w-3/4' onSubmit={handleSubmit}>
-                {/* {activeInput.map((input, index) => {
-                  return <div key={index}>{input}</div>;
-                })} */}
-                <div className='w-full flex flex-col justify-center align-center'>
-                  {(() => {
-                    switch (step) {
-                      case 0:
-                        return (
-                          <div className=' w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              What would you like to call your new event?
-                            </p>
-                            <label htmlFor='name' className='text-xs'></label>
-                            <input
-                              type='text'
-                              id='name'
-                              name='name'
-                              className=' border-b-2'
-                              value={promoState.name}
-                              onChange={handlePromoStateChange}
-                              placeholder='event name...'
-                            />
-                          </div>
-                        );
-                      case 1:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              What kind of event will this be?
-                            </p>
-                            <label className='p-2' htmlFor='type'>
-                              Event Type:
-                            </label>
-                            <select
-                              id='type'
-                              name='type'
-                              value={promoState.type}
-                              onChange={handlePromoStateChange}
-                              className='m-5 border border-solid bg-transparent leading-loose'
+                <div>
+                  <div className='w-full flex flex-col justify-center align-center'>
+                    <SwitchTransition mode={'out-in'}>
+                      <Transition
+                        key={entered}
+                        addEndListener={(node, done) => {
+                          node.addEventListener('transitionend', done, false);
+                        }}
+                        classNames='example'
+                        // in={entered}
+                        timeout={{
+                          appear: 500,
+                          enter: 900,
+                          exit: 900,
+                        }}
+                        appear
+                        unmountOnExit
+                      >
+                        {(state) => {
+                          return (
+                            <div
+                              style={{
+                                ...defaultStyle,
+                                ...transitionStyles[state],
+                              }}
                             >
-                              <option
-                                name='music event'
-                                value='music event'
-                                onChange={handlePromoStateChange}
-                              >
-                                Music Event
-                              </option>
-                              <option
-                                name='volunteer work'
-                                value='volunteer work'
-                                onChange={handlePromoStateChange}
-                              >
-                                Volunteer work
-                              </option>
-                            </select>
-                          </div>
-                        );
-                      case 2:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              Where will this event take place?
-                            </p>
-                            <label className='p-2' htmlFor='address'>
-                              Street Address:
-                            </label>
-                            <input
-                              type='text'
-                              name='address'
-                              value={promoState.address}
-                              onChange={handlePromoStateChange}
-                              className=' border border-solid bg-transparent leading-loose'
-                            />
-                            <label className='p-2' htmlFor='city'>
-                              City:
-                            </label>
-                            <input
-                              type='text'
-                              name='city'
-                              value={promoState.city}
-                              onChange={handlePromoStateChange}
-                              className=' border border-solid bg-transparent leading-loose'
-                            />
-                            <label className='p-2' htmlFor='state'>
-                              State:
-                            </label>
-                            <input
-                              type='text'
-                              name='state'
-                              value={promoState.state}
-                              onChange={handlePromoStateChange}
-                              className=' border border-solid bg-transparent leading-loose'
-                            />
-                            <label className='p-2' htmlFor='postal'>
-                              Postal Code:
-                            </label>
-                            <input
-                              type='text'
-                              name='postal'
-                              value={promoState.postal}
-                              onChange={handlePromoStateChange}
-                              className=' border border-solid bg-transparent leading-loose'
-                            />
-                          </div>
-                        );
-                      case 3:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              When will this event happen?
-                            </p>
-                            <label className='p-2' htmlFor='startDate'>
-                              Start Date:
-                            </label>
-                            <input
-                              type='date'
-                              name='startDate'
-                              value={promoState.startDate}
-                              onChange={handlePromoStateChange}
-                              className='m-5 border border-solid bg-transparent leading-loose'
-                            />
-                            <label className='p-2' htmlFor='startTime'>
-                              Start Time:
-                            </label>
-                            <input
-                              type='time'
-                              name='startTime'
-                              value={promoState.startTime}
-                              onChange={handlePromoStateChange}
-                              className='m-5 border border-solid bg-transparent leading-loose'
-                            />
-                          </div>
-                        );
-                      case 4:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              When will the event end?
-                            </p>
-                            <label className='p-2' htmlFor='endDate'>
-                              End Date:
-                            </label>
-                            <input
-                              type='date'
-                              name='endDate'
-                              value={promoState.endDate}
-                              onChange={handlePromoStateChange}
-                              className='m-5 border border-solid bg-transparent leading-loose'
-                            />
-                            <label className='p-2' htmlFor='endTime'>
-                              End Time:
-                            </label>
-                            <input
-                              type='time'
-                              name='endTime'
-                              value={promoState.endTime}
-                              onChange={handlePromoStateChange}
-                              className='m-5 border border-solid bg-transparent leading-loose'
-                            />
-                          </div>
-                        );
-                      case 5:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              Describe your event.
-                            </p>
-                            <Editor
-                              handleDescriptionChange={handleDescriptionChange}
-                              placeholder='Tell people about your event...'
-                            />
-                          </div>
-                        );
-                      case 6:
-                        return (
-                          <div className='w-full h-full flex flex-col justify-center align-center'>
-                            <p className='p-16 text-center'>
-                              Links to Images of your event.
-                            </p>
-                            <label htmlFor='pictures' className='text-xs'>
-                              Image URLs:
-                            </label>
-                            <textarea
-                              name='pictures'
-                              id='pictures'
-                              cols='10'
-                              rows='10'
-                              value={promoState.pictures}
-                              onChange={handlePromoStateChange}
-                              className='border border-solid w-full'
-                              placeholder="Add as many URLs as you'd like, each on a new line."
-                            ></textarea>
-                          </div>
-                        );
-                      default:
-                        return <div>Test</div>;
-                    }
-                  })()}
+                              {(() => {
+                                switch (step) {
+                                  case 0:
+                                    return (
+                                      <div className=' w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          What would you like to call your new
+                                          event?
+                                        </p>
+                                        <label
+                                          htmlFor='name'
+                                          className='text-xs'
+                                        ></label>
+                                        <input
+                                          type='text'
+                                          id='name'
+                                          name='name'
+                                          className=' border-b-2'
+                                          value={promoState.name}
+                                          onChange={handlePromoStateChange}
+                                          placeholder='event name...'
+                                        />
+                                      </div>
+                                    );
+                                  case 1:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          What kind of event will this be?
+                                        </p>
+                                        <label className='p-2' htmlFor='type'>
+                                          Event Type:
+                                        </label>
+                                        <select
+                                          id='type'
+                                          name='type'
+                                          value={promoState.type}
+                                          onChange={handlePromoStateChange}
+                                          className='m-5 border border-solid bg-transparent leading-loose'
+                                        >
+                                          <option
+                                            name='music event'
+                                            value='music event'
+                                            onChange={handlePromoStateChange}
+                                          >
+                                            Music Event
+                                          </option>
+                                          <option
+                                            name='volunteer work'
+                                            value='volunteer work'
+                                            onChange={handlePromoStateChange}
+                                          >
+                                            Volunteer work
+                                          </option>
+                                        </select>
+                                      </div>
+                                    );
+                                  case 2:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          Where will this event take place?
+                                        </p>
+                                        <label
+                                          className='p-2'
+                                          htmlFor='address'
+                                        >
+                                          Street Address:
+                                        </label>
+                                        <input
+                                          type='text'
+                                          name='address'
+                                          value={promoState.address}
+                                          onChange={handlePromoStateChange}
+                                          className=' border border-solid bg-transparent leading-loose'
+                                        />
+                                        <label className='p-2' htmlFor='city'>
+                                          City:
+                                        </label>
+                                        <input
+                                          type='text'
+                                          name='city'
+                                          value={promoState.city}
+                                          onChange={handlePromoStateChange}
+                                          className=' border border-solid bg-transparent leading-loose'
+                                        />
+                                        <label className='p-2' htmlFor='state'>
+                                          State:
+                                        </label>
+                                        <input
+                                          type='text'
+                                          name='state'
+                                          value={promoState.state}
+                                          onChange={handlePromoStateChange}
+                                          className=' border border-solid bg-transparent leading-loose'
+                                        />
+                                        <label className='p-2' htmlFor='postal'>
+                                          Postal Code:
+                                        </label>
+                                        <input
+                                          type='text'
+                                          name='postal'
+                                          value={promoState.postal}
+                                          onChange={handlePromoStateChange}
+                                          className=' border border-solid bg-transparent leading-loose'
+                                        />
+                                      </div>
+                                    );
+                                  case 3:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          When will this event happen?
+                                        </p>
+                                        <label
+                                          className='p-2'
+                                          htmlFor='startDate'
+                                        >
+                                          Start Date:
+                                        </label>
+                                        <input
+                                          type='date'
+                                          name='startDate'
+                                          value={promoState.startDate}
+                                          onChange={handlePromoStateChange}
+                                          className='m-5 border border-solid bg-transparent leading-loose'
+                                        />
+                                        <label
+                                          className='p-2'
+                                          htmlFor='startTime'
+                                        >
+                                          Start Time:
+                                        </label>
+                                        <input
+                                          type='time'
+                                          name='startTime'
+                                          value={promoState.startTime}
+                                          onChange={handlePromoStateChange}
+                                          className='m-5 border border-solid bg-transparent leading-loose'
+                                        />
+                                      </div>
+                                    );
+                                  case 4:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          When will the event end?
+                                        </p>
+                                        <label
+                                          className='p-2'
+                                          htmlFor='endDate'
+                                        >
+                                          End Date:
+                                        </label>
+                                        <input
+                                          type='date'
+                                          name='endDate'
+                                          value={promoState.endDate}
+                                          onChange={handlePromoStateChange}
+                                          className='m-5 border border-solid bg-transparent leading-loose'
+                                        />
+                                        <label
+                                          className='p-2'
+                                          htmlFor='endTime'
+                                        >
+                                          End Time:
+                                        </label>
+                                        <input
+                                          type='time'
+                                          name='endTime'
+                                          value={promoState.endTime}
+                                          onChange={handlePromoStateChange}
+                                          className='m-5 border border-solid bg-transparent leading-loose'
+                                        />
+                                      </div>
+                                    );
+                                  case 5:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          Describe your event.
+                                        </p>
+                                        <Editor
+                                          handleDescriptionChange={
+                                            handleDescriptionChange
+                                          }
+                                          placeholder='Tell people about your event...'
+                                        />
+                                      </div>
+                                    );
+                                  case 6:
+                                    return (
+                                      <div className='w-full h-full flex flex-col justify-center align-center'>
+                                        <p className='p-16 text-center'>
+                                          Links to Images of your event.
+                                        </p>
+                                        <label
+                                          htmlFor='pictures'
+                                          className='text-xs'
+                                        >
+                                          Image URLs:
+                                        </label>
+                                        <textarea
+                                          name='pictures'
+                                          id='pictures'
+                                          cols='10'
+                                          rows='10'
+                                          value={promoState.pictures}
+                                          onChange={handlePromoStateChange}
+                                          className='border border-solid w-full'
+                                          placeholder="Add as many URLs as you'd like, each on a new line."
+                                        ></textarea>
+                                      </div>
+                                    );
+                                  default:
+                                    return <div>Test</div>;
+                                }
+                              })()}
+                            </div>
+                          );
+                        }}
+                      </Transition>
+                    </SwitchTransition>
+                  </div>
+
                   <div className='w-full flex  justify-center align-center'>
                     {isFirstStep ? null : (
                       <button

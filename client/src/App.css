@@ -50,7 +50,7 @@ body {
   font-size: small;
 }
 
-/* tract-transitions-group */
+/* react-transition-group */
 
 .example-enter {
   opacity: 0.01;
@@ -68,4 +68,21 @@ body {
 .example-leave.example-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+
+.fade-enter{
+  opacity: 0;
+}
+.fade-exit{
+  opacity: 1;
+}
+.fade-enter-active{
+  opacity: 1;
+}
+.fade-exit-active{
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-exit-active{
+  transition: opacity 500ms;
 }
