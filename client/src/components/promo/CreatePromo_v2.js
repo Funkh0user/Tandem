@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Transition, SwitchTransition } from 'react-transition-group';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from '../Editor';
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
@@ -144,12 +144,12 @@ const CreatePromo_v2 = ({
                 <div>
                   <div className='w-full flex flex-col justify-center align-center'>
                     <SwitchTransition mode={'out-in'}>
-                      <Transition
+                      <CSSTransition
                         key={entered}
                         addEndListener={(node, done) => {
                           node.addEventListener('transitionend', done, false);
                         }}
-                        classNames='example'
+                        classNames='fade'
                         // in={entered}
                         timeout={{
                           appear: 500,
@@ -163,8 +163,8 @@ const CreatePromo_v2 = ({
                           return (
                             <div
                               style={{
-                                ...defaultStyle,
-                                ...transitionStyles[state],
+                                // ...defaultStyle,
+                                // ...transitionStyles[state],
                               }}
                             >
                               {(() => {
@@ -388,7 +388,7 @@ const CreatePromo_v2 = ({
                             </div>
                           );
                         }}
-                      </Transition>
+                      </CSSTransition>
                     </SwitchTransition>
                   </div>
 

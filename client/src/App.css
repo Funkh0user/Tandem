@@ -52,7 +52,7 @@ body {
 
 /* react-transition-group */
 
-.example-enter {
+/* .example-enter {
   opacity: 0.01;
 }
 
@@ -68,7 +68,7 @@ body {
 .example-leave.example-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
-}
+} */
 
 .fade-enter{
   opacity: 0;
