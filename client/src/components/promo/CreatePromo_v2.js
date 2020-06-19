@@ -13,30 +13,12 @@ const CreatePromo_v2 = ({
 }) => {
   let history = useHistory();
   const [expanded, setExpanded] = useState(null);
-  const showForms = () => setExpanded(!expanded);
   const [step, setStep] = useState(0);
-  const [isFirstStep, setIsFirstStep] = useState(true);
-  const [isLastStep, setIsLastStep] = useState(false);
   const [entered, setEntered] = useState(true);
+  
+  const showForms = () => setExpanded(!expanded);
 
-  const handleSetStep = (e) => {
-    e.preventDefault();
-    setEntered(!entered);
-    if (e.target.name === 'nextButton') {
-      console.log(step);
-      step <= 4 && setStep(step + 1);
-      // step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
-      // step >= 5 ? setIsLastStep(true) : setIsLastStep(false);
-      console.log(step);
-    } else if (e.target.name === 'backButton') {
-      console.log(step);
-      step >= 0 && setStep(step - 1);
-      // step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
-      // step === 5 ? setIsLastStep(true) : setIsLastStep(false);
-      console.log(step);
-    }
-  };
-
+  
   //posts data to server / mongoDB
   const saveEvent = async (data) => {
     const result = await fetch('http://localhost:3001/api/events', {
@@ -55,12 +37,23 @@ const CreatePromo_v2 = ({
       console.log('there was a problem saving this event.', error);
     }
   };
+  
+  const handleSetStep = (e) => {
+    //prevent default form behavior.
+    e.preventDefault();
+    setEntered(!entered);
+    if (e.target.name === 'nextButton') {
+      step <= 5  && setStep(step + 1);
+    } else if (e.target.name === 'backButton') {
+      step >= 0 && setStep(step - 1);
+    }
+  };
 
   const handleClick = () => {
-    console.log('trigger');
     // handleSetPicturesArray()///// TODO why does one or the other fire but not both?
     handleSetDateTime(); //// TODO why does one or the other fire but not both?
   };
+
   const handleSubmit = (e) => {
     //prevent default form behavior.
     e.preventDefault();
@@ -142,7 +135,7 @@ const CreatePromo_v2 = ({
                         appear
                         unmountOnExit
                       >
-                        {(state) => {
+                        {() => {
                           return (
                             <div>
                               {(() => {
@@ -381,7 +374,7 @@ const CreatePromo_v2 = ({
                       </button>
                     )}
 
-                    {step === 5 ? (
+                    {step === 6 ? (
                       <button
                         type='submit'
                         className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
