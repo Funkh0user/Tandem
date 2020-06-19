@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from '../Editor';
@@ -19,36 +19,20 @@ const CreatePromo_v2 = ({
   const [isLastStep, setIsLastStep] = useState(false);
   const [entered, setEntered] = useState(true);
 
-  const defaultStyle = {
-    transition: `transform 200ms, opacity 200ms ease`,
-    opacity: 1,
-  };
-
-  const transitionStyles = {
-    entering: { opacity: 0.5 },
-    entered: { opacity: 1 },
-    exiting: { opacity: 0.5 },
-    exited: { opacity: 0 },
-  };
-
-  // let step = 0;
-
   const handleSetStep = (e) => {
     e.preventDefault();
     setEntered(!entered);
     if (e.target.name === 'nextButton') {
       console.log(step);
-      step <= 5 ? setStep(step + 1) : setStep(step);
-      // step <= 5 ? (step += 1) : (step = step);
-      step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
-      step >= 5 ? setIsLastStep(true) : setIsLastStep(false);
+      step <= 4 && setStep(step + 1);
+      // step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
+      // step >= 5 ? setIsLastStep(true) : setIsLastStep(false);
       console.log(step);
     } else if (e.target.name === 'backButton') {
       console.log(step);
-      step >= 1 ? setStep(step - 1) : setStep(step);
-      // step >= 1 ? (step -= 1) : (step = step);
-      step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
-      step >= 5 ? setIsLastStep(true) : setIsLastStep(false);
+      step >= 0 && setStep(step - 1);
+      // step === 0 ? setIsFirstStep(true) : setIsFirstStep(false);
+      // step === 5 ? setIsLastStep(true) : setIsLastStep(false);
       console.log(step);
     }
   };
@@ -150,7 +134,6 @@ const CreatePromo_v2 = ({
                           node.addEventListener('transitionend', done, false);
                         }}
                         classNames='fade'
-                        // in={entered}
                         timeout={{
                           appear: 500,
                           enter: 900,
@@ -161,12 +144,7 @@ const CreatePromo_v2 = ({
                       >
                         {(state) => {
                           return (
-                            <div
-                              style={{
-                                // ...defaultStyle,
-                                // ...transitionStyles[state],
-                              }}
-                            >
+                            <div>
                               {(() => {
                                 switch (step) {
                                   case 0:
@@ -393,7 +371,7 @@ const CreatePromo_v2 = ({
                   </div>
 
                   <div className='w-full flex  justify-center align-center'>
-                    {isFirstStep ? null : (
+                    {step > 0 && (
                       <button
                         className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
                         name='backButton'
@@ -403,7 +381,7 @@ const CreatePromo_v2 = ({
                       </button>
                     )}
 
-                    {isLastStep ? (
+                    {step === 5 ? (
                       <button
                         type='submit'
                         className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
