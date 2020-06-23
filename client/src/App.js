@@ -6,6 +6,7 @@ import MainStyle from './components/MainStyle';
 import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
+import Event from './components/Event';
 import PromoState from './components/context/PromoContext/PromoState'; // promo global state management via context api. a work in progress.
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
@@ -41,14 +42,12 @@ const App = () => {
     threshold: 0.0,
   };
 
-  let eventsToShow = 0; // TODO change this to useRef()
+  let eventsToShow = 0; 
 
   // instantiate intersection observer.
   const observer = new IntersectionObserver((entries) => {
     //for each element being observed (in this case, only 1, #bottom-boundary)....
     entries.forEach((entry) => {
-      // console.log(entry);
-      // console.log(entry.isIntersecting);
       //when the element intersects the viewport, get 6 more events from the server.
       if (entry.isIntersecting) {
         eventsToShow += 6;
@@ -57,6 +56,7 @@ const App = () => {
     });
   }, options);
 
+
   //defines our backend api call to get events
   const getEvents = async (numberOfEvents) => {
     try {
@@ -64,8 +64,9 @@ const App = () => {
         `http://localhost:3001/api/events/${numberOfEvents}`
       );
       const newData = await events.json();
-      setAllEvents([...allEvents, ...newData]);
-      return newData;
+      // console.log(allEvents)/////////////////////////////////////////////
+      setAllEvents(newData);
+      // return newData;
     } catch (error) {
       console.log(error);
     }
@@ -143,6 +144,7 @@ const App = () => {
           <Route path='/social'>
             <Social />
           </Route>
+          <Route path='/:eventName' component={Event} />
         </Switch>
       </MainStyle>
     </Router>

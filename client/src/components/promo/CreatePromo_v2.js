@@ -15,10 +15,9 @@ const CreatePromo_v2 = ({
   const [expanded, setExpanded] = useState(null);
   const [step, setStep] = useState(0);
   const [entered, setEntered] = useState(true);
-  
+
   const showForms = () => setExpanded(!expanded);
 
-  
   //posts data to server / mongoDB
   const saveEvent = async (data) => {
     const result = await fetch('http://localhost:3001/api/events', {
@@ -37,13 +36,13 @@ const CreatePromo_v2 = ({
       console.log('there was a problem saving this event.', error);
     }
   };
-  
+
   const handleSetStep = (e) => {
     //prevent default form behavior.
     e.preventDefault();
     setEntered(!entered);
     if (e.target.name === 'nextButton') {
-      step <= 5  && setStep(step + 1);
+      step <= 5 && setStep(step + 1);
     } else if (e.target.name === 'backButton') {
       step >= 0 && setStep(step - 1);
     }
@@ -182,6 +181,7 @@ const CreatePromo_v2 = ({
                                             name='music event'
                                             value='music event'
                                             onChange={handlePromoStateChange}
+                                            selected
                                           >
                                             Music Event
                                           </option>

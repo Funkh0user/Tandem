@@ -9,7 +9,6 @@ describe('CreatePromo Component', () => {
     mount(<CreatePromo />)
     // now use standard Cypress commands
     cy.get('[data-cy=closed]').should('be.visible')
-    console.log(CreatePromo)
   })
   //it('posts data to the backend', () => {
   //
