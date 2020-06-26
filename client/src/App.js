@@ -11,6 +11,7 @@ import PromoState from './components/context/PromoContext/PromoState'; // promo 
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
+
 // TODO start using context api for global state management ASAP.
 
 const App = () => {
@@ -109,10 +110,6 @@ const App = () => {
   //wrapper function for handling the react-quill rich-text input specifically
   const handleDescriptionChange = (value) =>
     setPromoState({ ...promoState, description: value });
-
-  useEffect( () => {
-    console.log(promoState);
-  },[])
     
   useEffect(() => {
     //loads more events when viewport intersects with #bottom-boundary
@@ -144,7 +141,7 @@ const App = () => {
           <Route path='/social'>
             <Social />
           </Route>
-          <Route path='/:eventName' component={Event} />
+          <Route path='/events/:eventName' component={Event} />
         </Switch>
       </MainStyle>
     </Router>

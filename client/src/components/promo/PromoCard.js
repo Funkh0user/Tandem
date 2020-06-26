@@ -5,7 +5,6 @@ import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
 import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import ImageCarousel from '../ImageCarousel';
-// import promoContext from '../context/PromoContext/PromoContext'
 
 const PromoCard = ({ promoState }) => {
 	//destructure promoState prop
@@ -28,31 +27,33 @@ const PromoCard = ({ promoState }) => {
 		startDateTime,
 	} = promoState;
 
-	// const testContext = useContext(promoContext)
-
-	// console.log(testContext)
-
 	const [isExpanded, setIsExpanded] = useState(false);
-	const expand = () => setIsExpanded(!isExpanded);
-
+	
 	const [coords, setCoords] = useState({
 		lat: '',
 		lng: '',
 	});
-
-	const handleSetCoords = (newCoords) => {
-		setCoords(newCoords);
-	};
-
+	
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
-
+	
+	const expand = () => setIsExpanded(!isExpanded);
+	
 	const picturesArr = pictures
 		.replace(/\n/g, ' ')
 		.split(' ')
 		.filter((picture) => picture !== '');
 
+	const handleSetCoords = (newCoords) => {
+		setCoords(newCoords);
+	};
+
+
 	//need to make api call to opencagedata to convert location address into coordinates for leaflet maps.
 	const getCoords = async () => {
+		console.log(address);
+		console.log(city);
+		console.log(state);
+		console.log(postal);
 		const result = await fetch(
 			`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
 				address
@@ -65,6 +66,7 @@ const PromoCard = ({ promoState }) => {
 
 	useEffect(() => {
 		getCoords().then((result) => {
+			console.log(result);
 			if (result.results[0]) {
 				//set some state to these coords, pass into eventLocationMap.
 				handleSetCoords(result.results[0].geometry);
@@ -146,7 +148,7 @@ const PromoCard = ({ promoState }) => {
 						className='break-words m-2 p-2 text-center'
 						dangerouslySetInnerHTML={{ __html: description }}
 					></div>
-          <Link to={`/${name}`}>See Full Page</Link>
+					<Link to={`/events/${name}`}>See Full Page</Link>
 					<button
 						className='p-2 text-center text-4xl text-blue-400'
 						onClick={expand}
