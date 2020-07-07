@@ -10,7 +10,6 @@ const SearchEvents = () => {
   return (
     <div className='w-full'>
       <div className='bg-orange-400 h-48 grid grid-cols-1 md:grid-cols-3'>
-        {/* TODO refactor to pageHeader component with headerText prop */}
         <div>
           <h1 className='text-4xl text-white mt-10 ml-10'>Search Events</h1>
         </div>

@@ -64,7 +64,6 @@ router.get('/:number', async (req, res) => {
 //@description  GET a specific event to display on its own individual page.
 
 router.get('/event/:eventName', async (req, res) => {
-  console.log('trigger trigger trigger')
   const eventName = req.params.eventName
   //get events from mongoDB
   try {

@@ -6,7 +6,6 @@ import { Map, TileLayer, Marker, Popup } from "react-leaflet"
 
 class EventLocationMap extends React.Component {
     constructor(props) {
-      console.log(props)
       super(props)
       this.state = {
         lat: this.props.coords.lat,
@@ -15,8 +14,6 @@ class EventLocationMap extends React.Component {
       }
     }
     render() {
-      // console.log(this.state)
-      console.log(this.state)
       const position = [this.state.lat, this.state.lng];
       return (
         <Map center={position} zoom={this.state.zoom}>

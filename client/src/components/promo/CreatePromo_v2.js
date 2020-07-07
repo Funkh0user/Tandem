@@ -1,15 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from '../Editor';
+
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
+
+
 const CreatePromo_v2 = ({
   promoState,
   handlePromoStateChange,
   handleDescriptionChange,
   handleSetAllEvents,
   handleSetDateTime,
+  handleDefaultEndDateTime
 }) => {
   let history = useHistory();
   const [expanded, setExpanded] = useState(null);
@@ -37,11 +41,19 @@ const CreatePromo_v2 = ({
     }
   };
 
+
+
   const handleSetStep = (e) => {
     //prevent default form behavior.
     e.preventDefault();
     setEntered(!entered);
     if (e.target.name === 'nextButton') {
+      //  need a function here to check if form input is valid before moving on.
+      console.log(step)
+      console.log(promoState.eventName)
+      console.log(e.target)
+      if (step === 0 && promoState.name === '') alert('trigger')
+
       step <= 5 && setStep(step + 1);
     } else if (e.target.name === 'backButton') {
       step >= 0 && setStep(step - 1);
@@ -49,8 +61,8 @@ const CreatePromo_v2 = ({
   };
 
   const handleClick = () => {
-    // handleSetPicturesArray()///// TODO why does one or the other fire but not both?
-    handleSetDateTime(); //// TODO why does one or the other fire but not both?
+    // handleSetPicturesArray()/////  why does one or the other fire but not both?
+    handleSetDateTime(); ////  why does one or the other fire but not both?
   };
 
   const handleSubmit = (e) => {
@@ -76,10 +88,11 @@ const CreatePromo_v2 = ({
     }
   };
 
+
+
   if (!expanded) {
     return (
       <div className='create-promo closed' data-cy='closed'>
-        {/* TODO refactor to pageHeader component with headerText prop */}
         <div className='w-full h-48 bg-green-400'>
           <h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
         </div>
@@ -281,6 +294,7 @@ const CreatePromo_v2 = ({
                                       </div>
                                     );
                                   case 4:
+                                  handleDefaultEndDateTime()//  why is this cauing infinite rerenders?
                                     return (
                                       <div className='w-full h-full flex flex-col justify-center align-center'>
                                         <p className='p-16 text-center'>
@@ -293,6 +307,7 @@ const CreatePromo_v2 = ({
                                           End Date:
                                         </label>
                                         <input
+                                          id='endDate'
                                           type='date'
                                           name='endDate'
                                           value={promoState.endDate}
@@ -306,6 +321,7 @@ const CreatePromo_v2 = ({
                                           End Time:
                                         </label>
                                         <input
+                                          id='endTime'
                                           type='time'
                                           name='endTime'
                                           value={promoState.endTime}
@@ -388,7 +404,7 @@ const CreatePromo_v2 = ({
                         name='nextButton'
                         onClick={handleSetStep}
                       >
-                        next
+                        Next
                       </button>
                     )}
                   </div>

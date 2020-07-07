@@ -8,6 +8,7 @@ import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import ImageCarousel from '../ImageCarousel';
 import spinner from '../../assets/spinner.gif';
 
+//component for displaying small amount of data from many events on one page.
 const PromoCard = ({ promoState }) => {
 	//destructure promoState prop
 	const {
@@ -29,36 +30,41 @@ const PromoCard = ({ promoState }) => {
 		startDateTime,
 	} = promoState;
 
+	//local state variable controls if card is expanded or not
 	const [isExpanded, setIsExpanded] = useState(false);
 
+	// state variable for setting location in leaflet maps.
 	const [coords, setCoords] = useState({
 		lat: '',
 		lng: '',
 	});
+
+
+	//state variable for triggering react-transition-group
 	const [entered, setEntered] = useState(true);
 
+	//instantiate a date object and format to be human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
+	//handle function to expand promo card
 	const expand = () => {
 		setEntered(!entered);
 		setIsExpanded(!isExpanded);
 	};
 
-	const picturesArr = pictures
+	// creates an array of image urls by parsing the pictures string.
+	const pictureArray = pictures
 		.replace(/\n/g, ' ')
 		.split(' ')
 		.filter((picture) => picture !== '');
 
+	//handler function for setting coordinates
 	const handleSetCoords = (newCoords) => {
 		setCoords(newCoords);
 	};
 
-	//need to make api call to opencagedata to convert location address into coordinates for leaflet maps.
+	//Function to make api call to opencagedata to convert location address into coordinates for leaflet maps.
 	const getCoords = async () => {
-		console.log(address);
-		console.log(city);
-		console.log(state);
-		console.log(postal);
 		const result = await fetch(
 			`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
 				address
@@ -69,9 +75,9 @@ const PromoCard = ({ promoState }) => {
 		return await result.json();
 	};
 
+	//after component mounts, get coordinates and set them into state
 	useEffect(() => {
 		getCoords().then((result) => {
-			console.log(result);
 			if (result.results[0]) {
 				//set some state to these coords, pass into eventLocationMap.
 				handleSetCoords(result.results[0].geometry);
@@ -81,6 +87,7 @@ const PromoCard = ({ promoState }) => {
 
 	return (
 		<div>
+		{/* react-transition-group wrapper components */}
 			<SwitchTransition mode={'out-in'}>
 				<CSSTransition
 					key={entered}
@@ -96,9 +103,11 @@ const PromoCard = ({ promoState }) => {
 					appear
 					unmountOnExit
 				>
+				{/* react-transition-group components take a annonymous function as a child. function returns the elements that the animations will apply to */}
 					{() => {
 						return (
 							<div>
+							{/* switch statement returning jsx, needs to be wrapped in IIFE */}
 								{(() => {
 									switch (isExpanded) {
 										case false:
@@ -109,7 +118,7 @@ const PromoCard = ({ promoState }) => {
 															<p>{name}</p>
 														</h1>
 														<img
-															src={picturesArr[0]}
+															src={pictureArray[0]}
 															className='w-8/12 mx-auto m-2'
 														/>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>
@@ -159,7 +168,7 @@ const PromoCard = ({ promoState }) => {
 															</button>
 														</h1>
 														<div className='mx-auto'>
-															<ImageCarousel picturesArr={picturesArr} />
+															<ImageCarousel pictureArray={pictureArray} />
 															{/* <EventLocationMap coords={coords} /> */}
 															{coords.lng && coords.lat !== '' ? (
 																<EventLocationMap coords={coords} />
@@ -190,16 +199,23 @@ const PromoCard = ({ promoState }) => {
 															className='break-words m-2 p-2 text-center'
 															dangerouslySetInnerHTML={{ __html: description }}
 														></div>
-														<Link to={`/events/${name}`}>See Full Page</Link>
-														<button
+														<Link to={`/events/${name}`}><p className='text-blue-600'>Go to event page</p></Link>
+														{/* <button
 															className='p-2 text-center text-4xl text-blue-400'
 															onClick={expand}
 														>
 															{isExpanded ? <GoChevronUp /> : <GoChevronDown />}
-														</button>
+														</button> */}
 													</div>
 												</div>
 											);
+											default:
+											return (
+												<div>
+												<p>Default case</p>
+												</div>
+
+											)
 									}
 								})()}
 							</div>
