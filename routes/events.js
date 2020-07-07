@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
 });
 
 //@Route  api/events 
-//@description  GET events
+//@description  GET events to display on mainpage in promo widget / cards.
 
 router.get('/:number', async (req, res) => {
   const numberOfEventsToDisplay = req.params.number
@@ -59,4 +59,20 @@ router.get('/:number', async (req, res) => {
   }
 });
 
+
+//@Route  api/events 
+//@description  GET a specific event to display on its own individual page.
+
+router.get('/event/:eventName', async (req, res) => {
+  const eventName = req.params.eventName
+  //get events from mongoDB
+  try {
+    const event = await Events.findOne({ name: req.params.eventName });
+    console.log(event)
+    res.status(200).json(event)
+  } catch(error) {
+    console.log(error)
+    res.status(500).send('Server error.')
+  }
+});
 module.exports = router;
