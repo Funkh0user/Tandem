@@ -38,18 +38,18 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 						className='break-words m-2 p-2 text-center'
 						dangerouslySetInnerHTML={{ __html: description }}
 					></div>
+					<div className='bg-white text-center'>
+						<button className='p-2 text-center text-4xl text-blue-400'>
+							<Link to={`/`}>back</Link>
+						</button>
+					</div>
 				</div>
-				
 				{coords.lng && coords.lat !== '' ? (
 					<EventLocationMap coords={coords} />
 				) : (
-					<img src={spinner} />
+					<div><img src={spinner} /></div>
 				)}
-			</div>
-			<div className='bg-white text-center'>
-				<button className='p-2 text-center text-4xl text-blue-400'>
-					<Link to={`/`}>back</Link>
-				</button>
+
 			</div>
 		</div>
 	);

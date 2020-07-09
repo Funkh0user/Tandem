@@ -5,11 +5,12 @@
 }
 
 .leaflet-container {
-  height: 200px;
+  height: 75vh;
   width: 100%;
 }
 
-body {
+html, body {
+
   background-color: #e0e0e0;
   margin-bottom: 100px;
 }

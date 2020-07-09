@@ -104,14 +104,16 @@ const App = () => {
 
     // this function sets the values of the end date and end time html elements relative to the start date and start time values.
 	const handleDefaultEndDateTime = () => {
-		const now = new Date();
+    let startDateTime = new Date(`${promoState.startDate}:${promoState.startTime}`);
+    let fourHoursFromThen = new Date(startDateTime.setTime(startDateTime.getTime() + (3600000 * 4)))
+
 		setPromoState({
 			...promoState,
 			endDate: promoState.startDate,
 			endTime: `${
-				now.getUTCHours() <= 9 && '0'
-			}${now.getUTCHours()}:${now.getUTCMinutes()}`,
-		}); // TODO add 4 hours to endTime as a default setting.
+				fourHoursFromThen.getHours() <= 9 ? '0' : ''
+			}${fourHoursFromThen.getHours()}:${fourHoursFromThen.getMinutes() <= 9 ? '0' : ''}${fourHoursFromThen.getMinutes()}`,
+		}); 
 	};
 
 	useEffect(() => {
