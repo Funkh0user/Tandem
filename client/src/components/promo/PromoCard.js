@@ -200,12 +200,6 @@ const PromoCard = ({ promoState }) => {
 															dangerouslySetInnerHTML={{ __html: description }}
 														></div>
 														<Link to={`/events/${name}`}><p className='text-blue-600'>Go to event page</p></Link>
-														{/* <button
-															className='p-2 text-center text-4xl text-blue-400'
-															onClick={expand}
-														>
-															{isExpanded ? <GoChevronUp /> : <GoChevronDown />}
-														</button> */}
 													</div>
 												</div>
 											);

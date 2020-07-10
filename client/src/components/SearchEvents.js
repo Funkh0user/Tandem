@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import NavigationContext from './context/navigationContext/NavigationContext'
 
 const SearchEvents = () => {
+
   const [eventSearchForm, setEventSearchForm] = useState({
     search: '',
   });
   const handleEventSearch = (e) =>
     setEventSearchForm({ [e.target.name]: e.target.value });
+
+    const navigationContext = useContext(NavigationContext)
+    useEffect(() => {
+      navigationContext.changeTheme()
+    }, [navigationContext.location]);
 
   return (
     <div className='w-full'>

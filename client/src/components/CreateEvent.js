@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import NavigationContext from './context/navigationContext/NavigationContext';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from './Editor';
 import { GoChevronDown } from 'react-icons/go';
@@ -14,6 +15,7 @@ const CreateEvent = ({
 	handleSetDateTime,
 	handleDefaultEndDateTime,
 }) => {
+	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
 	const [expanded, setExpanded] = useState(null);
 	const [step, setStep] = useState(0);
@@ -21,7 +23,7 @@ const CreateEvent = ({
 	const [showFormAlert, setShowFormAlert] = useState(false);
 	const showForms = () => setExpanded(!expanded);
 	const handleShowFormAlert = () => {
-    // setEntered(!entered);
+		// setEntered(!entered);
 		setShowFormAlert(!showFormAlert);
 		setTimeout(() => {
 			setShowFormAlert();
@@ -71,12 +73,11 @@ const CreateEvent = ({
 				if (promoState.startDate === '' || promoState.startTime === '') {
 					handleShowFormAlert();
 				} else {
-          handleDefaultEndDateTime()
+					handleDefaultEndDateTime();
 					setEntered(!entered);
 					step <= 5 && setStep(step + 1);
 				}
 			} else if (step === 4) {
-
 				if (promoState.endDate === '' || promoState.endTime === '') {
 					handleShowFormAlert();
 				} else {
@@ -87,7 +88,6 @@ const CreateEvent = ({
 				setEntered(!entered);
 				step <= 5 && setStep(step + 1);
 			}
-
 		} else if (e.target.name === 'backButton') {
 			setEntered(!entered);
 			step >= 0 && setStep(step - 1);
@@ -121,6 +121,10 @@ const CreateEvent = ({
 			console.log(error);
 		}
 	};
+
+	useEffect(() => {
+		navigationContext.changeTheme();
+	}, [navigationContext.location]);
 
 	//widget is either open or closed based on state variable expanded.
 	//return corresponding jsx

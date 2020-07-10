@@ -6,6 +6,8 @@ import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
 import Event from './components/Event';
+import PromoState from './components/context/PromoContext/PromoState';
+import NavigationState from './components/context/navigationContext/NavigationState';
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
@@ -102,18 +104,24 @@ const App = () => {
 	const handleDescriptionChange = (value) =>
 		setPromoState({ ...promoState, description: value });
 
-    // this function sets the values of the end date and end time html elements relative to the start date and start time values.
+	// this function sets the values of the end date and end time html elements relative to the start date and start time values.
 	const handleDefaultEndDateTime = () => {
-    let startDateTime = new Date(`${promoState.startDate}:${promoState.startTime}`);
-    let fourHoursFromThen = new Date(startDateTime.setTime(startDateTime.getTime() + (3600000 * 4)))
+		let startDateTime = new Date(
+			`${promoState.startDate}:${promoState.startTime}`
+		);
+		let fourHoursFromThen = new Date(
+			startDateTime.setTime(startDateTime.getTime() + 3600000 * 4)
+		);
 
 		setPromoState({
 			...promoState,
 			endDate: promoState.startDate,
 			endTime: `${
 				fourHoursFromThen.getHours() <= 9 ? '0' : ''
-			}${fourHoursFromThen.getHours()}:${fourHoursFromThen.getMinutes() <= 9 ? '0' : ''}${fourHoursFromThen.getMinutes()}`,
-		}); 
+			}${fourHoursFromThen.getHours()}:${
+				fourHoursFromThen.getMinutes() <= 9 ? '0' : ''
+			}${fourHoursFromThen.getMinutes()}`,
+		});
 	};
 
 	useEffect(() => {
@@ -123,35 +131,39 @@ const App = () => {
 	}, []);
 
 	return (
-		// <PromoState>
-		<Router>
-			<MainStyle>
-				<Switch>
-					<Route exact path='/'>
-						<Home allEvents={allEvents} />
-					</Route>
-					<Route exact path='/create'>
-						<CreateEvent
-							promoState={promoState}
-							handlePromoStateChange={handlePromoStateChange}
-							handleDescriptionChange={handleDescriptionChange}
-							handleSetAllEvents={handleSetAllEvents}
-							handleSetDateTime={handleSetDateTime}
-							handleDefaultEndDateTime={handleDefaultEndDateTime}
-							// handleSetPicturesArray={handleSetPicturesArray}
-						/>
-					</Route>
-					<Route path='/search'>
-						<SearchEvents />
-					</Route>
-					<Route path='/social'>
-						<Social />
-					</Route>
-					<Route path='/events/:eventName' component={Event} />
-				</Switch>
-			</MainStyle>
-		</Router>
-		// </PromoState>
+		<div>
+			<NavigationState>
+			<PromoState>
+				<Router>
+					<MainStyle>
+						<Switch>
+							<Route exact path='/'>
+								<Home allEvents={allEvents} />
+							</Route>
+							<Route exact path='/create'>
+								<CreateEvent
+									promoState={promoState}
+									handlePromoStateChange={handlePromoStateChange}
+									handleDescriptionChange={handleDescriptionChange}
+									handleSetAllEvents={handleSetAllEvents}
+									handleSetDateTime={handleSetDateTime}
+									handleDefaultEndDateTime={handleDefaultEndDateTime}
+									// handleSetPicturesArray={handleSetPicturesArray}
+								/>
+							</Route>
+							<Route path='/search'>
+								<SearchEvents />
+							</Route>
+							<Route path='/social'>
+								<Social />
+							</Route>
+							<Route path='/events/:eventName' component={Event} />
+						</Switch>
+					</MainStyle>
+				</Router>
+			</PromoState>
+			</NavigationState>
+		</div>
 	);
 };
 

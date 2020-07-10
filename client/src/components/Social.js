@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import NavigationContext from './context/navigationContext/NavigationContext'
 
 const Social = () => {
+
+  const navigationContext = useContext(NavigationContext)
   const [eventSearchForm, setEventSearchForm] = useState({
     search: '',
   });
   const handleEventSearch = (e) =>
     setEventSearchForm({ [e.target.name]: e.target.value });
 
+    useEffect(() => {
+      navigationContext.changeTheme()
+    }, [navigationContext.location]);
   return (
     <div className='w-full'>
       <div className='bg-purple-400 h-48 grid grid-cols-1 md:grid-cols-3'>

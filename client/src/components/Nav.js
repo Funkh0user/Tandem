@@ -1,35 +1,37 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineHome } from 'react-icons/ai';
 import { RiMenu2Line } from 'react-icons/ri';
 import { FiMessageSquare } from 'react-icons/fi';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
+import NavigationContext from './context/navigationContext/NavigationContext'
 const Nav = () => {
-
+    const navigationContext = useContext(NavigationContext)
     const [selected, setSelected] = useState('');
 
-    const handleClick = (e) => {
+      useEffect(() => {
         setSelected(document.activeElement.name);
-        switch (document.activeElement.name) {
-          case 'home':
+        switch (navigationContext.location) {
+          case 'http://localhost:3000/':
             colorSelector('blue');
             break;
-          case 'create':
+          case 'http://localhost:3000/create':
             colorSelector('green');
             break;
-          case 'search':
+          case 'http://localhost:3000/search':
             colorSelector('orange');
             break;
-          case 'social':
+          case 'http://localhost:3000/social':
             colorSelector('purple');
             break;
           default:
-            colorSelector('blue');  
+            colorSelector('blue');
         }
-      };
+      }, [navigationContext.location]);
     
       const [color, setColor] = useState('blue');
       const colorSelector = (value) => setColor(value);
+
   return (
     <nav className='flex justify-around w-full bg-white shadow-lg fixed bottom-0 right-0'>
       <div
@@ -37,7 +39,7 @@ const Nav = () => {
           selected === 'home' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
         }
       >
-        <Link name='home' to='/' onClick={handleClick}>
+        <Link name='home' to='/'>
           <AiOutlineHome className={`text-${color}-400 text-4xl`} />
         </Link>
       </div>
@@ -46,7 +48,7 @@ const Nav = () => {
           selected === 'search' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
         }
       >
-        <Link name='search' to='/search' onClick={handleClick}>
+        <Link name='search' to='/search'>
           <RiMenu2Line className={`text-${color}-400 text-4xl`} />
         </Link>
       </div>
@@ -55,7 +57,7 @@ const Nav = () => {
           selected === 'social' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
         }
       >
-        <Link name='social' to='/social' onClick={handleClick}>
+        <Link name='social' to='/social'>
           <FiMessageSquare className={`text-${color}-400 text-4xl`} />
         </Link>
       </div>
@@ -64,7 +66,7 @@ const Nav = () => {
           selected === 'create' ? `border-b-4 border-${color}-700 m-2` : 'm-2'
         }
       >
-        <Link name='create' to='/create' onClick={handleClick}>
+        <Link name='create' to='/create'>
           <AiOutlinePlusCircle className={`text-${color}-400 text-4xl`} />
         </Link>
       </div>

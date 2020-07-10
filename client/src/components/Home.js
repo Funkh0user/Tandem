@@ -1,8 +1,15 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import PromoCard from './promo/PromoCard';
+import NavigationContext from './context/navigationContext/NavigationContext';
 
 //currently, returns a lazy-loaded list of all saved events
 const Home = ({ allEvents, eventStateEvents }) => {
+	const navigationContext = useContext(NavigationContext);
+
+	console.log(navigationContext)
+	useEffect(() => {
+		navigationContext.changeTheme()
+	}, [navigationContext.location]);
 	return (
 		<Fragment>
 			<div className='bg-blue-400 h-48 flex'>
