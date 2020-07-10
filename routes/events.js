@@ -65,10 +65,12 @@ router.get('/:number', async (req, res) => {
 
 router.get('/event/:eventName', async (req, res) => {
   const eventName = req.params.eventName
+  console.log(eventName.split('-').join(' '))
+  const formattedEventName = eventName.split('-').join(' ')
   //get events from mongoDB
   try {
-    const event = await Events.findOne({ name: req.params.eventName });
-    console.log(event)
+    const event = await Events.findOne({ name: formattedEventName });
+    console.log('here is the event you searched for: ', event)
     res.status(200).json(event)
   } catch(error) {
     console.log(error)

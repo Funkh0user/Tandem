@@ -30,6 +30,8 @@ const PromoCard = ({ promoState }) => {
 		startDateTime,
 	} = promoState;
 
+	const formattedName = name.split(' ').join('-');
+	console.log(formattedName)
 	//local state variable controls if card is expanded or not
 	const [isExpanded, setIsExpanded] = useState(false);
 
@@ -38,7 +40,6 @@ const PromoCard = ({ promoState }) => {
 		lat: '',
 		lng: '',
 	});
-
 
 	//state variable for triggering react-transition-group
 	const [entered, setEntered] = useState(true);
@@ -87,7 +88,7 @@ const PromoCard = ({ promoState }) => {
 
 	return (
 		<div>
-		{/* react-transition-group wrapper components */}
+			{/* react-transition-group wrapper components */}
 			<SwitchTransition mode={'out-in'}>
 				<CSSTransition
 					key={entered}
@@ -103,11 +104,11 @@ const PromoCard = ({ promoState }) => {
 					appear
 					unmountOnExit
 				>
-				{/* react-transition-group components take a annonymous function as a child. function returns the elements that the animations will apply to */}
+					{/* react-transition-group components take a annonymous function as a child. function returns the elements that the animations will apply to */}
 					{() => {
 						return (
 							<div>
-							{/* switch statement returning jsx, needs to be wrapped in IIFE */}
+								{/* switch statement returning jsx, needs to be wrapped in IIFE */}
 								{(() => {
 									switch (isExpanded) {
 										case false:
@@ -199,17 +200,18 @@ const PromoCard = ({ promoState }) => {
 															className='break-words m-2 p-2 text-center'
 															dangerouslySetInnerHTML={{ __html: description }}
 														></div>
-														<Link to={`/events/${name}`}><p className='text-blue-600'>Go to event page</p></Link>
+														<Link to={`/events/${formattedName}`}>
+															<p className='text-blue-600'>Go to event page</p>
+														</Link>
 													</div>
 												</div>
 											);
-											default:
+										default:
 											return (
 												<div>
-												<p>Default case</p>
+													<p>Default case</p>
 												</div>
-
-											)
+											);
 									}
 								})()}
 							</div>

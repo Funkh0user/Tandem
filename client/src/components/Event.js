@@ -43,10 +43,12 @@ const Event = ({ match }) => {
 	//here we define our fetch call to the backend.
 	const getEvent = async (name) => {
 		const event = await fetch(
-			`http://localhost:3001/api/events/event/${name}` // TODO format the event name to replace spaces with dashes (camel case)
+			`http://localhost:3001/api/events/event/${name}` // TODO format the event name to replace spaces with dashes
 		).then(async (result) => {
 			const newData = await result.json();
-			if (newData.name === eventName) {
+			console.log(newData.name)
+			console.log(eventName)
+			if (newData.name === eventName.split('-').join(' ')) {
 				handleSetEventState(newData);
 			}
 			// return newData
