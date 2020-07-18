@@ -5,7 +5,8 @@ import NavigationReducer from './NavigationReducer'
 const NavigationState = (props) => {
 
     const initialState = {
-        theme: 'main'
+        theme: 'main',
+        location: null
     }
 
     const [state, dispatch] = useReducer(NavigationReducer, initialState)

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import NavigationContext from './context/navigationContext/NavigationContext';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from './Editor';
+import Test from './Test'
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 
@@ -14,6 +15,7 @@ const CreateEvent = ({
 	handleSetAllEvents,
 	handleSetDateTime,
 	handleDefaultEndDateTime,
+	handleSetLatLng
 }) => {
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
@@ -59,10 +61,11 @@ const CreateEvent = ({
 				handleShowFormAlert();
 			} else if (step === 2) {
 				if (
-					promoState.address === '' ||
-					!promoState.city === '' ||
-					!promoState.state === '' ||
-					promoState.postal === ''
+					promoState.latLng.lat === undefined && promoState.latLng.lng === undefined 
+				// 	promoState.address === '' ||
+				// 	!promoState.city === '' ||
+				// 	!promoState.state === '' ||
+				// 	promoState.postal === ''
 				) {
 					handleShowFormAlert();
 				} else {
@@ -257,7 +260,11 @@ const CreateEvent = ({
 																	case 2:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																				<p className='p-16 text-center'>
+																			<Test handleSetLatLng={handleSetLatLng} />
+																			<p className='p-16 text-center'>
+																					Where will this event take place?
+																				</p>
+																				{/* <p className='p-16 text-center'>
 																					Where will this event take place?
 																				</p>
 																				<label
@@ -302,7 +309,7 @@ const CreateEvent = ({
 																					value={promoState.postal}
 																					onChange={handlePromoStateChange}
 																					className=' border border-solid bg-transparent leading-loose'
-																				/>
+																				/> */}
 																			</div>
 																		);
 																	case 3:

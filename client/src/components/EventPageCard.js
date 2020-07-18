@@ -1,3 +1,5 @@
+/** @format */
+
 import React from 'react';
 import EventLocationMap from './EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
@@ -13,6 +15,9 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 	//instantiate a new Date object, and format it to be more human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
+	console.log(coords);
+	console.log(eventState.latLng);
+
 	return (
 		<div className='flex-col'>
 			<h1 className='rounded-t bg-blue-400 text-center text-white text-3xl break-words'>
@@ -20,7 +25,7 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 				<button className='p-2'></button>
 			</h1>
 			<div className='flex p-5 rounded bg-white shadow-lg text-center'>
-				<div className='flex-col justify-center items-center px-5'>
+				<div className='flex-col flex-1 justify-center items-center px-5'>
 					{pictureArray !== '' && <ImageCarousel pictureArray={pictureArray} />}
 					<div className='flex justify-around items-center text-center'>
 						<div className='p-2 flex flex-col items-center'>
@@ -36,20 +41,22 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 					</div>
 					<div
 						className='break-words m-2 p-2 text-center'
-						dangerouslySetInnerHTML={{ __html: description }}
-					></div>
+						dangerouslySetInnerHTML={{ __html: description }}></div>
 					<div className='bg-white text-center'>
 						<button className='p-2 text-center text-4xl text-blue-400'>
 							<Link to={`/`}>back</Link>
 						</button>
 					</div>
 				</div>
-				{coords.lng && coords.lat !== '' ? (
-					<EventLocationMap coords={coords} />
+				{eventState.latLng ? (
+					<div className='flex-1'>
+					<EventLocationMap coords={eventState.latLng} />
+					</div>
 				) : (
-					<div><img src={spinner} /></div>
+					<div>
+						<img src={spinner} />
+					</div>
 				)}
-
 			</div>
 		</div>
 	);

@@ -11,6 +11,7 @@ import NavigationState from './components/context/navigationContext/NavigationSt
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
+import { latLng } from 'leaflet';
 
 const App = () => {
 	//set initial createPromo widget state.
@@ -28,6 +29,7 @@ const App = () => {
 		city: '',
 		state: '',
 		postal: '',
+		latLng: {},
 		description: '',
 		pictures: '', // TODO change to an array. modify mongoDB schema, and related code that parses the current data structure (primitive, string)
 		picturesArr: [],
@@ -91,6 +93,12 @@ const App = () => {
 		});
 	};
 
+	//wrapper function for setting the lat and lng from leaflet maps
+	const  handleSetLatLng = (coordsObject) => {
+		console.log(coordsObject)
+		setPromoState({...promoState, latLng: coordsObject})
+	}
+
 	// const handleSetPicturesArray = () => {
 	//   //format string
 	//   const picturesArr = promoState.pictures
@@ -148,6 +156,7 @@ const App = () => {
 									handleSetAllEvents={handleSetAllEvents}
 									handleSetDateTime={handleSetDateTime}
 									handleDefaultEndDateTime={handleDefaultEndDateTime}
+									handleSetLatLng={handleSetLatLng}
 									// handleSetPicturesArray={handleSetPicturesArray}
 								/>
 							</Route>
@@ -157,7 +166,7 @@ const App = () => {
 							<Route path='/social'>
 								<Social />
 							</Route>
-							<Route path='/events/:eventName' component={Event} />
+							<Route path='/events/:eventName' render={(props) => <Event {...props} latLng={latLng} />} />
 						</Switch>
 					</MainStyle>
 				</Router>

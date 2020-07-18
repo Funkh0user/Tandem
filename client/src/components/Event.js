@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import EventPageCard from './EventPageCard'
+import { GoRepoForcePush } from 'react-icons/go';
 
 //this component, as well as its child eventPageCard, are responsible for displaying data about an event on a seperate page with a unique url.
-const Event = ({ match }) => {
+const Event = (props) => {
 	//this grabs the parameter from the url with the name of the event.
 	const {
 		params: { eventName },
-	} = match;
-
+	} = props.match;
+	console.log(props)
 	//here we need to format match.params.eventName (destructured to eventName) before we use it to search mongoDB
 	// const formattedEventName = match.params.eventName.split().............
 
@@ -43,7 +44,7 @@ const Event = ({ match }) => {
 	//here we define our fetch call to the backend.
 	const getEvent = async (name) => {
 		const event = await fetch(
-			`http://localhost:3001/api/events/event/${name}` // TODO format the event name to replace spaces with dashes
+			`http://localhost:3001/api/events/event/${name}`
 		).then(async (result) => {
 			const newData = await result.json();
 			console.log(newData.name)

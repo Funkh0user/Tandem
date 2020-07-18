@@ -26,7 +26,7 @@ const PromoState = (props) => {
 
   const [state, dispatch] = useReducer(PromoReducer, initialState);
 
-  console.log(state)
+  // console.log(state)
 
   const expand = () => {
     try {

@@ -28,6 +28,7 @@ const PromoCard = ({ promoState }) => {
 		// picturesArr,
 		// files,
 		startDateTime,
+		latLng
 	} = promoState;
 
 	const formattedName = name.split(' ').join('-');
@@ -78,6 +79,7 @@ const PromoCard = ({ promoState }) => {
 
 	//after component mounts, get coordinates and set them into state
 	useEffect(() => {
+		console.log(promoState)
 		getCoords().then((result) => {
 			if (result.results[0]) {
 				//set some state to these coords, pass into eventLocationMap.
@@ -171,8 +173,8 @@ const PromoCard = ({ promoState }) => {
 														<div className='mx-auto'>
 															<ImageCarousel pictureArray={pictureArray} />
 															{/* <EventLocationMap coords={coords} /> */}
-															{coords.lng && coords.lat !== '' ? (
-																<EventLocationMap coords={coords} />
+															{latLng.lng && latLng.lat !== '' ? (
+																<EventLocationMap coords={latLng} />
 															) : (
 																<img src={spinner} />
 															)}
