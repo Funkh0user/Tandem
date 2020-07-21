@@ -1,18 +1,18 @@
-/** @format */
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
-const Test = ({handleSetLatLng}) => {
-	console.log('trigger')
+
+//TODO refactor component with new name and comments
+const LocationSelector = ({handleSetLatLng}) => {
 	const [coords, setCoords] = useState({ lat: '', lng: '', zoom: 2 });
 
-    const position = [coords.lat, coords.lng];
-    
+	const [position, setPosition] = useState([coords.lat, coords.lng])
+	
     const handleOnClick = (e) => {
-		console.log(e.latlng)
 		const myLatLng = e.latlng
 		handleSetLatLng(myLatLng)
+		setPosition([myLatLng.lat, myLatLng.lng])
+		setCoords({...coords, zoom: e._zoom})
     }
 
 	return (
@@ -29,4 +29,4 @@ const Test = ({handleSetLatLng}) => {
 		</Map>
 	);
 };
- export default Test
+ export default LocationSelector

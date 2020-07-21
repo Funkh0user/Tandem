@@ -6,15 +6,17 @@ const router = express.Router();
 //@description    POST new event 
 router.post('/', async (req, res) => {
   //check mongoDB for an event with the same name. if it exists, exit with 400 error
-  console.log('here is the request body', req.body)
-  const events = await Events.findOne({ name: req.body.name });
+  console.log('here is the request body')
+  const lowerCaseName = req.body.name.toLowerCase().trim()
+  console.log(lowerCaseName)
+  const events = await Events.findOne({ name: lowerCaseName });
   if (events) {
     return res.status(400).json({ errorMsg: 'Event already exists.' });
   } 
   //save event to mongoDB
   try {
     const newEvent = new Events({
-      name: req.body.name,
+      name: lowerCaseName,
       type: req.body.type,
       description: req.body.description,
       startDate: req.body.startDate,
@@ -65,9 +67,7 @@ router.get('/:number', async (req, res) => {
 //@description  GET a specific event to display on its own individual page.
 
 router.get('/event/:eventName', async (req, res) => {
-  const eventName = req.params.eventName
-  console.log(eventName.split('-').join(' '))
-  const formattedEventName = eventName.split('-').join(' ')
+  const formattedEventName = req.params.eventName.split('-').join(' ').toLowerCase()
   //get events from mongoDB
   try {
     const event = await Events.findOne({ name: formattedEventName });

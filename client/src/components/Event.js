@@ -8,7 +8,6 @@ const Event = (props) => {
 	const {
 		params: { eventName },
 	} = props.match;
-	console.log(props)
 	//here we need to format match.params.eventName (destructured to eventName) before we use it to search mongoDB
 	// const formattedEventName = match.params.eventName.split().............
 
@@ -57,17 +56,17 @@ const Event = (props) => {
 	};
 
 	//defines our api call to opencagedata to convert location address into coordinates for leaflet maps.
-	const getCoords = async () => {
-		const result = await fetch(
-			`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-				address
-			)}%20${encodeURIComponent(city)}%20${encodeURIComponent(
-				state
-			)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
-		);
-		const newData = await result.json();
-		return newData;
-	};
+	// const getCoords = async () => {
+	// 	const result = await fetch(
+	// 		`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+	// 			address
+	// 		)}%20${encodeURIComponent(city)}%20${encodeURIComponent(
+	// 			state
+	// 		)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
+	// 	);
+	// 	const newData = await result.json();
+	// 	return newData;
+	// };
 
 	//handler for setting coordinates state.
 	const handleSetCoords = (newCoords) => {
@@ -88,7 +87,7 @@ const Event = (props) => {
 		.filter((picture) => picture !== '');
 	}
 
-	
+	//TODO refactor getcoords out of component
 	useEffect(() => {
 		//get the event data associated with the url from mongo db and use it to set local
 		getEvent(eventName);
@@ -99,20 +98,17 @@ const Event = (props) => {
 		setPictureArray(formattedPictureArray)
 
 		//use the address information to get coordinates.
-		if (eventState.address) {
-			getCoords().then((result) => {
-				//if there are results, set coordinate state to the results.
-				if (result.results[0]) {
-					//set some state to these coords, pass into eventLocationMap.
-					handleSetCoords(result.results[0].geometry);
-				}
-			});
-		}
+		// if (eventState.address) {
+		// 	getCoords().then((result) => {
+		// 		//if there are results, set coordinate state to the results.
+		// 		if (result.results[0]) {
+		// 			//set some state to these coords, pass into eventLocationMap.
+		// 			handleSetCoords(result.results[0].geometry);
+		// 		}
+		// 	});
+		// }
 	}, [
-		eventState.address,
-		eventState.city,
-		eventState.state,
-		eventState.postal,
+		eventState.pictures
 	]);
 
 

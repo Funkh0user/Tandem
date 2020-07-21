@@ -1,13 +1,13 @@
 /** @format */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import EventLocationMap from './EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
-import { RiMapPin2Line } from 'react-icons/ri';
+import { RiMapPin2Line} from 'react-icons/ri';
 import ImageCarousel from './ImageCarousel';
 import spinner from '../assets/spinner.gif';
 import { Link } from 'react-router-dom';
-
+//TODO improve comments
 //child component to Event.js
 const EventPageCard = ({ eventState, pictureArray, coords }) => {
 	//destructure event state.
@@ -15,14 +15,17 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 	//instantiate a new Date object, and format it to be more human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
-	console.log(coords);
-	console.log(eventState.latLng);
 
 	return (
 		<div className='flex-col'>
 			<h1 className='rounded-t bg-blue-400 text-center text-white text-3xl break-words'>
-				<p>{name}</p>
-				<button className='p-2'></button>
+				<p>
+					{name &&
+						name
+							.split(' ')
+							.map((word) => word[0].toUpperCase() + word.slice(1))
+							.join(' ')}
+				</p>
 			</h1>
 			<div className='flex p-5 rounded bg-white shadow-lg text-center'>
 				<div className='flex-col flex-1 justify-center items-center px-5'>
@@ -50,7 +53,7 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 				</div>
 				{eventState.latLng ? (
 					<div className='flex-1'>
-					<EventLocationMap coords={eventState.latLng} />
+						<EventLocationMap coords={eventState.latLng} />
 					</div>
 				) : (
 					<div>

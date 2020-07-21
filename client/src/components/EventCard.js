@@ -1,15 +1,17 @@
+/** @format */
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
-import EventLocationMap from '../EventLocationMap';
+import EventLocationMap from './EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { RiMapPin2Line } from 'react-icons/ri';
 import { GoChevronDown, GoChevronUp } from 'react-icons/go';
-import ImageCarousel from '../ImageCarousel';
-import spinner from '../../assets/spinner.gif';
+import ImageCarousel from './ImageCarousel';
+import spinner from '../assets/spinner.gif';
 
 //component for displaying small amount of data from many events on one page.
-const PromoCard = ({ promoState }) => {
+const EventCard = ({ promoState }) => {
 	//destructure promoState prop
 	const {
 		name,
@@ -28,11 +30,16 @@ const PromoCard = ({ promoState }) => {
 		// picturesArr,
 		// files,
 		startDateTime,
-		latLng
+		latLng,
 	} = promoState;
 
-	const formattedName = name.split(' ').join('-');
-	console.log(formattedName)
+	//format the name of the event with dashes instead of spaces, and
+	const formattedName = name
+		.split(' ')
+		.filter((char) => char != '')
+		.join('-')
+		.toLowerCase();
+
 	//local state variable controls if card is expanded or not
 	const [isExpanded, setIsExpanded] = useState(false);
 
@@ -65,28 +72,29 @@ const PromoCard = ({ promoState }) => {
 		setCoords(newCoords);
 	};
 
+	//TODO refactor getcoords out of component
 	//Function to make api call to opencagedata to convert location address into coordinates for leaflet maps.
-	const getCoords = async () => {
-		const result = await fetch(
-			`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-				address
-			)}%20${encodeURIComponent(city)}%20${encodeURIComponent(
-				state
-			)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
-		);
-		return await result.json();
-	};
+	// const getCoords = async () => {
+	// 	const result = await fetch(
+	// 		`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+	// 			address
+	// 		)}%20${encodeURIComponent(city)}%20${encodeURIComponent(
+	// 			state
+	// 		)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
+	// 	);
+	// 	return await result.json();
+	// };
 
 	//after component mounts, get coordinates and set them into state
-	useEffect(() => {
-		console.log(promoState)
-		getCoords().then((result) => {
-			if (result.results[0]) {
-				//set some state to these coords, pass into eventLocationMap.
-				handleSetCoords(result.results[0].geometry);
-			}
-		});
-	}, []);
+	// useEffect(() => {
+	// 	console.log(promoState)
+	// 	getCoords().then((result) => {
+	// 		if (result.results[0]) {
+	// 			//set some state to these coords, pass into eventLocationMap.
+	// 			handleSetCoords(result.results[0].geometry);
+	// 		}
+	// 	});
+	// }, []);
 
 	return (
 		<div>
@@ -104,8 +112,7 @@ const PromoCard = ({ promoState }) => {
 						exit: 900,
 					}}
 					appear
-					unmountOnExit
-				>
+					unmountOnExit>
 					{/* react-transition-group components take a annonymous function as a child. function returns the elements that the animations will apply to */}
 					{() => {
 						return (
@@ -118,7 +125,16 @@ const PromoCard = ({ promoState }) => {
 												<div className='p-5'>
 													<div className=' flex-col mx-auto m-5 rounded bg-white shadow-lg text-center'>
 														<h1 className='rounded-t justify-center bg-blue-400 text-center text-white text-2xl break-words'>
-															<p>{name}</p>
+															<p>
+																{name &&
+																	name
+																		.split(' ')
+																		.map(
+																			(word) =>
+																				word[0].toUpperCase() + word.slice(1)
+																		)
+																		.join(' ')}
+															</p>
 														</h1>
 														<img
 															src={pictureArray[0]}
@@ -145,12 +161,10 @@ const PromoCard = ({ promoState }) => {
 															className='break-words text-sm m-1 p-1'
 															dangerouslySetInnerHTML={{
 																__html: description.substring(0, 50) + '...',
-															}}
-														></div>
+															}}></div>
 														<button
 															className='p-1 text-4xl text-blue-400'
-															onClick={expand}
-														>
+															onClick={expand}>
 															{isExpanded ? <GoChevronUp /> : <GoChevronDown />}
 														</button>
 													</div>
@@ -161,7 +175,16 @@ const PromoCard = ({ promoState }) => {
 												<div className='m-5'>
 													<div className='flex-col mx-auto m-5 rounded bg-white shadow-lg text-center'>
 														<h1 className='rounded-t bg-blue-400 text-center text-white text-3xl break-words'>
-															<p>{name}</p>
+															<p>
+																{name &&
+																	name
+																		.split(' ')
+																		.map(
+																			(word) =>
+																				word[0].toUpperCase() + word.slice(1)
+																		)
+																		.join(' ')}
+															</p>
 															<button className='p-2' onClick={expand}>
 																{isExpanded ? (
 																	<GoChevronUp />
@@ -200,8 +223,9 @@ const PromoCard = ({ promoState }) => {
 
 														<div
 															className='break-words m-2 p-2 text-center'
-															dangerouslySetInnerHTML={{ __html: description }}
-														></div>
+															dangerouslySetInnerHTML={{
+																__html: description,
+															}}></div>
 														<Link to={`/events/${formattedName}`}>
 															<p className='text-blue-600'>Go to event page</p>
 														</Link>
@@ -225,4 +249,4 @@ const PromoCard = ({ promoState }) => {
 	);
 };
 
-export default PromoCard;
+export default EventCard;

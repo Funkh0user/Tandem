@@ -1,9 +1,10 @@
+
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import NavigationContext from './context/navigationContext/NavigationContext';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import Editor from './Editor';
-import Test from './Test'
+import LocationSelector from './LocationSelector';
 import { GoChevronDown } from 'react-icons/go';
 import { GoChevronUp } from 'react-icons/go';
 
@@ -15,7 +16,7 @@ const CreateEvent = ({
 	handleSetAllEvents,
 	handleSetDateTime,
 	handleDefaultEndDateTime,
-	handleSetLatLng
+	handleSetLatLng,
 }) => {
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
@@ -61,11 +62,8 @@ const CreateEvent = ({
 				handleShowFormAlert();
 			} else if (step === 2) {
 				if (
-					promoState.latLng.lat === undefined && promoState.latLng.lng === undefined 
-				// 	promoState.address === '' ||
-				// 	!promoState.city === '' ||
-				// 	!promoState.state === '' ||
-				// 	promoState.postal === ''
+					promoState.latLng.lat === undefined &&
+					promoState.latLng.lng === undefined
 				) {
 					handleShowFormAlert();
 				} else {
@@ -97,6 +95,7 @@ const CreateEvent = ({
 		}
 	};
 
+	//wrapper function to set an iso 8601 / rfc 3339 compliant date-time. triggered by submit button on form. specifically wasn't working in the handlesubmit function below
 	const handleClick = () => {
 		// handleSetPicturesArray()///// TODO why does one or the other fire but not both?
 		handleSetDateTime(); //// TODO why does one or the other fire but not both?
@@ -137,14 +136,13 @@ const CreateEvent = ({
 				<div className='w-full h-48 bg-green-400'>
 					<h1 className='text-white text-4xl pt-10 pl-10'>Create Events</h1>
 				</div>
-				<div className='w-10/12 md:w-10/12 lg:w-8/12 rounded-md mt-5 mx-auto bg-green-400 shadow-lg'>
+				<div className='w-10/12 lg:w-8/12 rounded-md mt-5 mx-auto bg-green-400 shadow-lg'>
 					<h2 className='text-center text-3xl p-5 text-white'>
-						<p>Create Promo</p>
+						<p>Create Event</p>
 						<button
 							data-cy='toggle-open'
 							className='text-2xl'
-							onClick={showForms}
-						>
+							onClick={showForms}>
 							<GoChevronDown style={{ color: 'white' }} />
 						</button>
 					</h2>
@@ -161,7 +159,7 @@ const CreateEvent = ({
 				<div className=' w-10/12 md:w-10/12 lg:w-8/12 mx-auto mt-5 shadow-lg'>
 					<div className='w-full rounded-t-md text-center bg-green-400'>
 						<h2 className='text-center text-3xl p-5 text-white'>
-							<p>Create Promo</p>
+							<p>Create Event</p>
 							<button className='text-2xl' onClick={showForms}>
 								<GoChevronUp className='text-white' />
 							</button>
@@ -187,8 +185,7 @@ const CreateEvent = ({
 													exit: 900,
 												}}
 												appear
-												unmountOnExit
-											>
+												unmountOnExit>
 												{/* this componenet takes an anonymous function as a child. the functions responsibility is to return the elements that will be animated when the enter or leave the dom */}
 												{() => {
 													return (
@@ -210,8 +207,7 @@ const CreateEvent = ({
 																				</p>
 																				<label
 																					htmlFor='name'
-																					className='text-xs'
-																				></label>
+																					className='text-xs'></label>
 																				<input
 																					type='text'
 																					id='name'
@@ -237,21 +233,18 @@ const CreateEvent = ({
 																					name='type'
 																					value={promoState.type}
 																					onChange={handlePromoStateChange}
-																					className='m-5 border border-solid bg-transparent leading-loose'
-																				>
+																					className='m-5 border border-solid bg-transparent leading-loose'>
 																					<option
 																						name='music event'
 																						value='music event'
 																						onChange={handlePromoStateChange}
-																						selected
-																					>
+																						selected>
 																						Music Event
 																					</option>
 																					<option
 																						name='volunteer work'
 																						value='volunteer work'
-																						onChange={handlePromoStateChange}
-																					>
+																						onChange={handlePromoStateChange}>
 																						Volunteer work
 																					</option>
 																				</select>
@@ -260,56 +253,12 @@ const CreateEvent = ({
 																	case 2:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																			<Test handleSetLatLng={handleSetLatLng} />
-																			<p className='p-16 text-center'>
+																				<LocationSelector
+																					handleSetLatLng={handleSetLatLng}
+																				/>
+																				<p className='p-16 text-center'>
 																					Where will this event take place?
 																				</p>
-																				{/* <p className='p-16 text-center'>
-																					Where will this event take place?
-																				</p>
-																				<label
-																					className='p-2'
-																					htmlFor='address'
-																				>
-																					Street Address:
-																				</label>
-																				<input
-																					type='text'
-																					name='address'
-																					value={promoState.address}
-																					onChange={handlePromoStateChange}
-																					className=' border border-solid bg-transparent leading-loose'
-																				/>
-																				<label className='p-2' htmlFor='city'>
-																					City:
-																				</label>
-																				<input
-																					type='text'
-																					name='city'
-																					value={promoState.city}
-																					onChange={handlePromoStateChange}
-																					className=' border border-solid bg-transparent leading-loose'
-																				/>
-																				<label className='p-2' htmlFor='state'>
-																					State:
-																				</label>
-																				<input
-																					type='text'
-																					name='state'
-																					value={promoState.state}
-																					onChange={handlePromoStateChange}
-																					className=' border border-solid bg-transparent leading-loose'
-																				/>
-																				<label className='p-2' htmlFor='postal'>
-																					Postal Code:
-																				</label>
-																				<input
-																					type='text'
-																					name='postal'
-																					value={promoState.postal}
-																					onChange={handlePromoStateChange}
-																					className=' border border-solid bg-transparent leading-loose'
-																				/> */}
 																			</div>
 																		);
 																	case 3:
@@ -320,8 +269,7 @@ const CreateEvent = ({
 																				</p>
 																				<label
 																					className='p-2'
-																					htmlFor='startDate'
-																				>
+																					htmlFor='startDate'>
 																					Start Date:
 																				</label>
 																				<input
@@ -333,8 +281,7 @@ const CreateEvent = ({
 																				/>
 																				<label
 																					className='p-2'
-																					htmlFor='startTime'
-																				>
+																					htmlFor='startTime'>
 																					Start Time:
 																				</label>
 																				<input
@@ -354,8 +301,7 @@ const CreateEvent = ({
 																				</p>
 																				<label
 																					className='p-2'
-																					htmlFor='endDate'
-																				>
+																					htmlFor='endDate'>
 																					End Date:
 																				</label>
 																				<input
@@ -368,8 +314,7 @@ const CreateEvent = ({
 																				/>
 																				<label
 																					className='p-2'
-																					htmlFor='endTime'
-																				>
+																					htmlFor='endTime'>
 																					End Time:
 																				</label>
 																				<input
@@ -404,8 +349,7 @@ const CreateEvent = ({
 																				</p>
 																				<label
 																					htmlFor='pictures'
-																					className='text-xs'
-																				>
+																					className='text-xs'>
 																					Image URLs:
 																				</label>
 																				<textarea
@@ -416,8 +360,7 @@ const CreateEvent = ({
 																					value={promoState.pictures}
 																					onChange={handlePromoStateChange}
 																					className='border border-solid w-full'
-																					placeholder="Add as many URLs as you'd like, each on a new line."
-																				></textarea>
+																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea>
 																			</div>
 																		);
 																	default:
@@ -436,8 +379,7 @@ const CreateEvent = ({
 											<button
 												className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
 												name='backButton'
-												onClick={handleSetStep}
-											>
+												onClick={handleSetStep}>
 												back
 											</button>
 										)}
@@ -446,16 +388,14 @@ const CreateEvent = ({
 											<button
 												type='submit'
 												className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
-												onClick={handleClick}
-											>
+												onClick={handleClick}>
 												Submit
 											</button>
 										) : (
 											<button
 												className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
 												name='nextButton'
-												onClick={handleSetStep}
-											>
+												onClick={handleSetStep}>
 												Next
 											</button>
 										)}

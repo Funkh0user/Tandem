@@ -6,7 +6,6 @@ import Home from './components/Home';
 import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
 import Event from './components/Event';
-import PromoState from './components/context/PromoContext/PromoState';
 import NavigationState from './components/context/navigationContext/NavigationState';
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
@@ -99,15 +98,6 @@ const App = () => {
 		setPromoState({...promoState, latLng: coordsObject})
 	}
 
-	// const handleSetPicturesArray = () => {
-	//   //format string
-	//   const picturesArr = promoState.pictures
-	//     .replace(/\n/g, ' ')
-	//     .split(' ')
-	//     .filter((picture) => picture !== '');
-	//   setPromoState({ ...promoState, picturesArr: picturesArr });
-	// };
-
 	//wrapper function for handling the react-quill rich-text input, specifically.
 	const handleDescriptionChange = (value) =>
 		setPromoState({ ...promoState, description: value });
@@ -141,7 +131,6 @@ const App = () => {
 	return (
 		<div>
 			<NavigationState>
-			<PromoState>
 				<Router>
 					<MainStyle>
 						<Switch>
@@ -170,7 +159,6 @@ const App = () => {
 						</Switch>
 					</MainStyle>
 				</Router>
-			</PromoState>
 			</NavigationState>
 		</div>
 	);

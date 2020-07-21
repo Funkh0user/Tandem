@@ -12,9 +12,6 @@ const NavigationState = (props) => {
     const [state, dispatch] = useReducer(NavigationReducer, initialState)
 
 
-    // console.log(state)
-
-
     const changeTheme = () => {
         dispatch({type: 'CHANGE_THEME'})
     }
