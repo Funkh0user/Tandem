@@ -14,6 +14,7 @@ class EventLocationMap extends React.Component {
       }
     }
     render() {
+      console.log(this.props)
       const position = [this.state.lat, this.state.lng];
       return (
         <Map center={position} zoom={this.state.zoom}>

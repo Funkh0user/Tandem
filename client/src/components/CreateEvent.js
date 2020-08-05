@@ -1,3 +1,4 @@
+/** @format */
 
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -17,6 +18,7 @@ const CreateEvent = ({
 	handleSetDateTime,
 	handleDefaultEndDateTime,
 	handleSetLatLng,
+	handleFileUpload,
 }) => {
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
@@ -34,23 +36,42 @@ const CreateEvent = ({
 	};
 
 	//posts data to server / mongoDB
+	// const saveEvent = async (data) => {
+	// 	console.log(data);
+	// 	const result = await fetch('http://localhost:3001/api/events', {
+	// 		method: 'POST',
+	// 		mode: 'cors',
+	// 		credentials: 'same-origin',
+	// 		headers: {
+	// 			'Content-Type': 'application/json',
+	// 		},
+	// 		body: JSON.stringify(data),
+	// 	});
+	// 	try {
+	// 		const newData = await result.json();
+	// 		console.log(newData);
+	// 		return newData;
+	// 	} catch (error) {
+	// 		console.log('there was a problem saving this event.', error);
+	// 	}
+	// };
 	const saveEvent = async (data) => {
+		console.log(data);
 		const result = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
+			body: data,
 		});
 		try {
 			const newData = await result.json();
+			console.log(newData);
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
 		}
 	};
+
 	//A function for keeping track of what section of the event creation form should be rendered..
 	const handleSetStep = (e) => {
 		//prevent default form behavior.
@@ -97,25 +118,39 @@ const CreateEvent = ({
 
 	//wrapper function to set an iso 8601 / rfc 3339 compliant date-time. triggered by submit button on form. specifically wasn't working in the handlesubmit function below
 	const handleClick = () => {
-		// handleSetPicturesArray()///// TODO why does one or the other fire but not both?
-		handleSetDateTime(); //// TODO why does one or the other fire but not both?
+		handleSetDateTime();
 	};
 
 	const handleSubmit = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
+
+		// prepare FormData() object to send multipart form data with text and picture files to backend
+		console.log(Object.entries(promoState));
+		let keyValuePairs = Object.entries(promoState)
+		const data = new FormData()
+		for(let pair of keyValuePairs) {
+			data.append(pair[0], pair[1])
+		}
+		for (var pair of data) {
+			console.log(pair[0] + ', ' + pair[1]);
+		}
+		
+		
 		//update mongoDB with new event.
 		try {
-			saveEvent(promoState).then((result) => {
+			// saveEvent(promoState).then((result) => {
+			saveEvent(data).then((result) => {
 				//update react state with new event if there is no duplicate event error.
-				if (!result.errorMsg) {
+				console.log(result)
+				if (result) {
 					handleSetAllEvents(result);
 					//redirect to homepage
 					history.push('/');
 					//if theres an error, log it.
 				} else {
-					console.log('there was an error', result.errorMsg);
-					return null;
+					console.log('there was an error saving the event.')
+					return null
 				}
 			});
 			//if there is a mongoDB error, log it.
@@ -342,6 +377,21 @@ const CreateEvent = ({
 																			</div>
 																		);
 																	case 6:
+																		
+																			const handleMyFileUpload = async (e) => {
+																			let fileUpload;
+																			if (e.target) {
+																				fileUpload = e.target.files[0];
+																				console.log(fileUpload);
+																				var data = new FormData();
+																				data.append('file', fileUpload);
+																				for (var pair of data.entries()) {
+																					console.log(pair[0] + ', ' + pair[1]);
+																				}
+																				handleFileUpload(fileUpload)
+																			}
+																		}; 
+																		
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
 																				<p className='p-16 text-center'>
@@ -361,6 +411,16 @@ const CreateEvent = ({
 																					onChange={handlePromoStateChange}
 																					className='border border-solid w-full'
 																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea>
+																				<label htmlFor='file'>
+																					Uplaod Images
+																				</label>
+																				<input
+																					id='ifile'
+																					name='file'
+																					type='file'
+																					accept='.jpg, .jpeg, .png, .svg'
+																					onChange={handleMyFileUpload}
+																				></input>
 																			</div>
 																		);
 																	default:

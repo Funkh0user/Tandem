@@ -27,7 +27,6 @@ const EventCard = ({ promoState }) => {
 		description,
 		// links,
 		pictures,
-		// picturesArr,
 		// files,
 		startDateTime,
 		latLng,
@@ -95,7 +94,7 @@ const EventCard = ({ promoState }) => {
 	// 		}
 	// 	});
 	// }, []);
-
+	console.log(latLng)
 	return (
 		<div>
 			{/* react-transition-group wrapper components */}

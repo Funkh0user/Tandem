@@ -63,6 +63,8 @@ const App = () => {
 				`http://localhost:3001/api/events/${numberOfEvents}`
 			);
 			const newData = await events.json();
+			console.log(typeof newData)
+			console.log(newData)
 			setAllEvents(newData);
 		} catch (error) {
 			console.log(error);
@@ -122,6 +124,10 @@ const App = () => {
 		});
 	};
 
+	const handleFileUpload = (files) => {
+		setPromoState({...promoState, files: files})
+	}
+	
 	useEffect(() => {
 		//loads more events when viewport intersects with #bottom-boundary
 		observer.observe(document.querySelector('#bottom-boundary'));
@@ -146,7 +152,7 @@ const App = () => {
 									handleSetDateTime={handleSetDateTime}
 									handleDefaultEndDateTime={handleDefaultEndDateTime}
 									handleSetLatLng={handleSetLatLng}
-									// handleSetPicturesArray={handleSetPicturesArray}
+									handleFileUpload={handleFileUpload}
 								/>
 							</Route>
 							<Route path='/search'>
