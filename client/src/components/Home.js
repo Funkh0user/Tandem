@@ -9,9 +9,11 @@ import NavigationContext from './context/navigationContext/NavigationContext';
 const Home = ({ allEvents, eventStateEvents }) => {
 	const navigationContext = useContext(NavigationContext);
 
+	//anytime the window location changes, update the theme, via context.
 	useEffect(() => {
 		navigationContext.changeTheme();
 	}, [navigationContext.location]);
+
 	return (
 		<div>
 			<div className='bg-blue-400 h-48 flex'>

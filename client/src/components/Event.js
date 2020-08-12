@@ -74,12 +74,12 @@ const Event = (props) => {
 			.filter((picture) => picture !== '');
 	}
 
-	//TODO refactor getcoords out of component
 	useEffect(() => {
-		//get the event data associated with the url from mongo db and use it to set local
+		//get the event data associated with the name in the url, from mongo db, and use it to set local state. 
 		getEvent(eventName);
 	}, [eventName]);
 
+	
 	useEffect(() => {
 		//set pictureArr created above to state.
 		setPictureArray(formattedPictureArray);

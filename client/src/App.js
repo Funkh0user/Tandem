@@ -30,7 +30,7 @@ const App = () => {
 		postal: '',
 		latLng: {},
 		description: '',
-		pictures: '', // TODO change to an array. modify mongoDB schema, and related code that parses the current data structure (primitive, string)
+		pictures: '', 
 		picturesArr: [],
 		files: null,
 	});
@@ -124,10 +124,12 @@ const App = () => {
 		});
 	};
 
+	//this function handles saving image files to state.
 	const handleFileUpload = (files) => {
 		setPromoState({...promoState, files: files})
 	}
 	
+	//once on mount, initiate intersection observer on #bottom-boundary elements
 	useEffect(() => {
 		//loads more events when viewport intersects with #bottom-boundary
 		observer.observe(document.querySelector('#bottom-boundary'));

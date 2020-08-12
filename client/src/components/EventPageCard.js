@@ -3,18 +3,18 @@
 import React, { useEffect } from 'react';
 import EventLocationMap from './EventLocationMap';
 import { AiOutlineCalendar } from 'react-icons/ai';
-import { RiMapPin2Line} from 'react-icons/ri';
+import { RiMapPin2Line } from 'react-icons/ri';
 import ImageCarousel from './ImageCarousel';
 import spinner from '../assets/spinner.gif';
 import { Link } from 'react-router-dom';
 //TODO improve comments
+
 //child component to Event.js
-const EventPageCard = ({ eventState, pictureArray, coords }) => {
+const EventPageCard = ({ eventState, pictureArray }) => {
 	//destructure event state.
 	const { startDateTime, name, type, address, description } = eventState;
 	//instantiate a new Date object, and format it to be more human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
-
 
 	return (
 		<div className='flex-col'>
@@ -53,7 +53,7 @@ const EventPageCard = ({ eventState, pictureArray, coords }) => {
 				</div>
 				{eventState.latLng ? (
 					<div className='flex-1'>
-						<EventLocationMap coords={eventState.latLng} />
+						<EventLocationMap coords={JSON.parse(eventState.latLng)} />
 					</div>
 				) : (
 					<div>

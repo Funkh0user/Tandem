@@ -1,32 +1,34 @@
-/** @format */
-
 const express = require('express');
 const Events = require('../models/events'); // import mongoDB model (schema)
 const router = express.Router();
-
 const multer = require('multer');
 
+
+//multer configuration for local disk storage
 const storage = multer.diskStorage({
 	destination: __dirname + '/media/',
 	filename(req, file, cb) {
-		console.log(file);
 		cb(null, `${file.originalname}-${new Date()}`);
 	},
 });
 
+//initiate multer middleware for handling enctype: multipart-form
 const upload = multer({ storage });
 
 //@route    api/events
 //@description    POST new event
 router.post('/', upload.any('file'), async (req, res) => {
-	console.log('heres the path: ', req.files[0].path);
+	//get the path of the saved image, save to mongo db to reference later when rendering
+
+	////Use amazon sdk and fs module to save image to an S3 bucket
+	////save url to mongodb below in an array
+
+
 	const image = req.files[0].path
-	console.log(req.body);
-	//trim whitespace and make the name lowercase so its easier to handle later in the get route
+	//trim whitespace from eventName and make the name lowercase so its easier to handle later in the get route
 	const lowerCaseName = req.body.name.toLowerCase().trim();
-	console.log(lowerCaseName);
-	const events = await Events.findOne({ name: lowerCaseName });
 	//check mongoDB for an event with the same name. if it exists, exit with 400 error
+	const events = await Events.findOne({ name: lowerCaseName });
 	if (events) {
 		return res.status(400).json({ errorMsg: 'Event already exists.' });
 	}

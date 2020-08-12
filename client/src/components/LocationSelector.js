@@ -8,6 +8,7 @@ const LocationSelector = ({handleSetLatLng}) => {
 
 	const [position, setPosition] = useState([coords.lat, coords.lng])
 	
+	//this function simultaneously updates the marker position on the map and sets the event location to state.
     const handleOnClick = (e) => {
 		const myLatLng = e.latlng
 		handleSetLatLng(myLatLng)

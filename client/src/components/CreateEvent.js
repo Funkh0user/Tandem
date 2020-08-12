@@ -35,28 +35,8 @@ const CreateEvent = ({
 		}, 4000);
 	};
 
-	//posts data to server / mongoDB
-	// const saveEvent = async (data) => {
-	// 	console.log(data);
-	// 	const result = await fetch('http://localhost:3001/api/events', {
-	// 		method: 'POST',
-	// 		mode: 'cors',
-	// 		credentials: 'same-origin',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 		},
-	// 		body: JSON.stringify(data),
-	// 	});
-	// 	try {
-	// 		const newData = await result.json();
-	// 		console.log(newData);
-	// 		return newData;
-	// 	} catch (error) {
-	// 		console.log('there was a problem saving this event.', error);
-	// 	}
-	// };
+	//A function that posts data to the server / mongoDB
 	const saveEvent = async (data) => {
-		console.log(data);
 		const result = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
 			mode: 'cors',
@@ -65,18 +45,18 @@ const CreateEvent = ({
 		});
 		try {
 			const newData = await result.json();
-			console.log(newData);
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
 		}
 	};
 
-	//A function for keeping track of what section of the event creation form should be rendered..
+	//A function for keeping track of what section of the event creation form should be rendered...
 	const handleSetStep = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
 		if (e.target.name === 'nextButton') {
+			//A series of checks to validate form input has been entered at each step
 			if (step === 0 && promoState.name === '') {
 				handleShowFormAlert();
 			} else if (step === 1 && promoState.type === '') {
@@ -88,13 +68,16 @@ const CreateEvent = ({
 				) {
 					handleShowFormAlert();
 				} else {
+					//trigger react-transition-group animation
 					setEntered(!entered);
+					//increment state of step
 					step <= 5 && setStep(step + 1);
 				}
 			} else if (step === 3) {
 				if (promoState.startDate === '' || promoState.startTime === '') {
 					handleShowFormAlert();
 				} else {
+					// this function sets the values of the end date and end time html elements relative to the start date and start time values.
 					handleDefaultEndDateTime();
 					setEntered(!entered);
 					step <= 5 && setStep(step + 1);
@@ -111,6 +94,7 @@ const CreateEvent = ({
 				step <= 5 && setStep(step + 1);
 			}
 		} else if (e.target.name === 'backButton') {
+			//if the user is pressing the back button, trigger react animation group and decrement state of step.
 			setEntered(!entered);
 			step >= 0 && setStep(step - 1);
 		}
@@ -121,36 +105,40 @@ const CreateEvent = ({
 		handleSetDateTime();
 	};
 
+	//A function for saving an image file to state
+	const handleMyFileUpload = async (e) => {
+		let fileUpload;
+		if (e.target) {
+			fileUpload = e.target.files[0];
+			console.log(fileUpload);
+			handleFileUpload(fileUpload);
+		}
+	};
+
 	const handleSubmit = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
-
-		// prepare FormData() object to send multipart form data with text and picture files to backend
-		console.log(Object.entries(promoState));
-		let keyValuePairs = Object.entries(promoState)
-		const data = new FormData()
-		for(let pair of keyValuePairs) {
-			data.append(pair[0], pair[1])
+		// prepare FormData() object to send multipart form data with text fields and picture files to backend.
+		let keyValuePairs = Object.entries(promoState);
+		const data = new FormData();
+		for (let pair of keyValuePairs) {
+			console.log(pair);
+			data.append(pair[0], pair[1]);
 		}
-		for (var pair of data) {
-			console.log(pair[0] + ', ' + pair[1]);
-		}
-		
-		
+		//overwrite latlng field with properly encoded (stringified) JSON object
+		data.set('latLng', JSON.stringify(promoState.latLng));
 		//update mongoDB with new event.
 		try {
-			// saveEvent(promoState).then((result) => {
 			saveEvent(data).then((result) => {
 				//update react state with new event if there is no duplicate event error.
-				console.log(result)
 				if (result) {
 					handleSetAllEvents(result);
 					//redirect to homepage
 					history.push('/');
 					//if theres an error, log it.
 				} else {
-					console.log('there was an error saving the event.')
-					return null
+					console.log('there was an error saving the event.');
+					return null;
 				}
 			});
 			//if there is a mongoDB error, log it.
@@ -159,6 +147,7 @@ const CreateEvent = ({
 		}
 	};
 
+	//anytime the window location changes, update the theme, via context.
 	useEffect(() => {
 		navigationContext.changeTheme();
 	}, [navigationContext.location]);
@@ -377,21 +366,6 @@ const CreateEvent = ({
 																			</div>
 																		);
 																	case 6:
-																		
-																			const handleMyFileUpload = async (e) => {
-																			let fileUpload;
-																			if (e.target) {
-																				fileUpload = e.target.files[0];
-																				console.log(fileUpload);
-																				var data = new FormData();
-																				data.append('file', fileUpload);
-																				for (var pair of data.entries()) {
-																					console.log(pair[0] + ', ' + pair[1]);
-																				}
-																				handleFileUpload(fileUpload)
-																			}
-																		}; 
-																		
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
 																				<p className='p-16 text-center'>
@@ -415,12 +389,11 @@ const CreateEvent = ({
 																					Uplaod Images
 																				</label>
 																				<input
-																					id='ifile'
+																					id='file'
 																					name='file'
 																					type='file'
 																					accept='.jpg, .jpeg, .png, .svg'
-																					onChange={handleMyFileUpload}
-																				></input>
+																					onChange={handleMyFileUpload}></input>
 																			</div>
 																		);
 																	default:
