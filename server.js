@@ -1,8 +1,11 @@
+require('dotenv').config()
 const express = require("express")
 const path = require("path")
 const app = express()
 const connectDB = require("./config/db")
 const cors = require("cors")
+
+//run mongoose connection methods, connect to mongoDB
 connectDB()
 
 //enable cross origin resource sharing while in development so frontend / webpack dev server and backend / express server running on different ports can communicate happily.

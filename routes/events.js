@@ -1,8 +1,42 @@
+/** @format */
+
+require('dotenv').config();
+const fs = require('fs');
 const express = require('express');
 const Events = require('../models/events'); // import mongoDB model (schema)
 const router = express.Router();
 const multer = require('multer');
+const aws = require('aws-sdk');
 
+const s3 = new aws.S3({
+	accessKeyId: process.env.AWS_S3_BUCKET_ID,
+	secretAccessKey: process.env.AWS_S3_BUCKET_SECRET,
+});
+
+const uploadSingleImage = (imagePath) => {
+	const imageData = fs.readFileSync(imagePath);
+
+	const params = {
+		Bucket: 'tand3m',
+		Key: 'test2',
+		Body: imageData,
+		// ContentType: 'image/jpg'
+	};
+
+	let finalUrl = '';
+	const sendToBucket = s3
+		.upload(params, (err, data) => {
+			if (err) {
+				throw err;
+			}
+		})
+		.promise();
+
+	sendToBucket.then((result) => {
+		console.log('here is our promise: ', result);
+		return result
+	});
+};
 
 //multer configuration for local disk storage
 const storage = multer.diskStorage({
@@ -23,8 +57,12 @@ router.post('/', upload.any('file'), async (req, res) => {
 	////Use amazon sdk and fs module to save image to an S3 bucket
 	////save url to mongodb below in an array
 
+	const image = req.files[0].path;
 
-	const image = req.files[0].path
+	const finalUrl = await uploadSingleImage(image);
+
+	console.log('here is the final Url', finalUrl);
+
 	//trim whitespace from eventName and make the name lowercase so its easier to handle later in the get route
 	const lowerCaseName = req.body.name.toLowerCase().trim();
 	//check mongoDB for an event with the same name. if it exists, exit with 400 error
@@ -51,7 +89,7 @@ router.post('/', upload.any('file'), async (req, res) => {
 			latLng: req.body.latLng,
 			description: req.body.description,
 			pictures: req.body.pictures,
-			picturesArr: image,
+			picturesArr: [finalUrl],
 		});
 		newEvent.save();
 		res.status(200).json(newEvent);
