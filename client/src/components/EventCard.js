@@ -18,7 +18,6 @@ const EventCard = ({ promoState }) => {
 		address,
 		description,
 		pictures,
-		// files,
 		startDateTime,
 		latLng,
 	} = promoState;

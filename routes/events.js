@@ -20,7 +20,7 @@ const uploadSingleImage = (imagePath) => {
 		Bucket: 'tand3m',
 		Key: 'test2',
 		Body: imageData,
-		// ContentType: 'image/jpg'
+		ContentType: 'image/jpg'
 	};
 
 	let finalUrl = '';

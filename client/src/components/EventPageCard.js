@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 //child component to Event.js
 const EventPageCard = ({ eventState, pictureArray }) => {
 	//destructure event state.
-	const { startDateTime, name, type, address, description } = eventState;
+	const { startDateTime, name, type, description } = eventState;
 	//instantiate a new Date object, and format it to be more human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
@@ -39,7 +39,7 @@ const EventPageCard = ({ eventState, pictureArray }) => {
 						</div>
 						<div className='p-2 flex flex-col items-center'>
 							<RiMapPin2Line className='text-4xl text-blue-400' />
-							<p className='text-sm font-hairline text-opacity-50'>{address}</p>
+							<p className='text-sm font-hairline text-opacity-50'></p>
 						</div>
 					</div>
 					<div
