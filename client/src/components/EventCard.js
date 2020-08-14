@@ -20,8 +20,9 @@ const EventCard = ({ promoState }) => {
 		pictures,
 		startDateTime,
 		latLng,
+		picturesArr
 	} = promoState;
-
+	console.log(picturesArr)
 	//format the name of the event with dashes instead of spaces, and
 	const formattedName = name
 		.split(' ')
@@ -159,7 +160,7 @@ const EventCard = ({ promoState }) => {
 															</button>
 														</h1>
 														<div className='mx-auto'>
-															<ImageCarousel pictureArray={pictureArray} />
+															<ImageCarousel pictureArray={picturesArr} />
 															{/* parse stringified object latLng and validate before rendering leaflet map */}
 															{JSON.parse(latLng).lng && JSON.parse(latLng).lat !== '' ? (
 																<EventLocationMap coords={JSON.parse(latLng)} />
