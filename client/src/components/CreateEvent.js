@@ -368,7 +368,7 @@ const CreateEvent = ({
 																	case 6:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																				<p className='p-16 text-center'>
+																				{/* <p className='p-16 text-center'>
 																					Links to Images of your event.
 																				</p>
 																				<label
@@ -384,7 +384,7 @@ const CreateEvent = ({
 																					value={promoState.pictures}
 																					onChange={handlePromoStateChange}
 																					className='border border-solid w-full'
-																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea>
+																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea> */}
 																				<label htmlFor='file'>
 																					Uplaod Images
 																				</label>

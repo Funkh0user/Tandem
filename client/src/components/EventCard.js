@@ -103,7 +103,7 @@ const EventCard = ({ promoState }) => {
 															</p>
 														</h1>
 														<img
-															src={pictureArray[0]}
+															src={picturesArr[0]}
 															className='w-8/12 mx-auto m-2'
 														/>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>
