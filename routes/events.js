@@ -1,4 +1,3 @@
-/** @format */
 
 require('dotenv').config();
 const fs = require('fs');
@@ -8,12 +7,15 @@ const router = express.Router();
 const multer = require('multer');
 const aws = require('aws-sdk');
 
+//initialize amazon s3 storage api
 const s3 = new aws.S3({
 	accessKeyId: process.env.AWS_S3_BUCKET_ID,
 	secretAccessKey: process.env.AWS_S3_BUCKET_SECRET,
 });
 
+//a function which takes an image file path, and the name the image will be saved as, and saves the image to aws
 const uploadSingleImage = async (imagePath, nameToApply) => {
+	//use the filesystem api provided by node to prepare the image to be uploaded.
 	const imageData = fs.readFileSync(imagePath);
 	const params = {
 		Bucket: 'tand3m',
@@ -22,12 +24,10 @@ const uploadSingleImage = async (imagePath, nameToApply) => {
 		ContentType: 'image/jpg',
 		ACL: 'public-read'
 	};
-
+	//s3.upload returns asyncronously and must be wrapped in a promise
 	const imageUploadPromise = new Promise((resolve, reject) => {
 		s3.upload(params, (err, data) => {
 			if (err) throw err;
-
-			// console.log('here is the upload data', data);
 			resolve(data);
 		});
 	});
@@ -36,6 +36,7 @@ const uploadSingleImage = async (imagePath, nameToApply) => {
 };
 
 //multer configuration for local disk storage
+// const storage = multer.memoryStorage()
 const storage = multer.diskStorage({
 	destination: __dirname + '/media/',
 	filename(req, file, cb) {
@@ -44,23 +45,30 @@ const storage = multer.diskStorage({
 });
 
 //initiate multer middleware for handling enctype: multipart-form
-const upload = multer({ storage });
+const upload = multer({storage});
 
 //@route    api/events
 //@description    POST new event
-router.post('/', upload.any('file'), async (req, res) => {
-	//get the path of the saved image, save to mongo db to reference later when rendering
+router.post('/', upload.any('file'), async (req, res, next) => {
 
-	////Use amazon sdk and fs module to save image to an S3 bucket
-	////save url to mongodb below in an array
-
-	const imagePath = req.files[0].path;
-
-	
-	
+	console.log('here are the files you sent to the server', req.files)
+	//get the files paths on the server which we saved via multer from the post request.
+	const imagePaths = req.files
 	//trim whitespace from eventName and make the name lowercase so its easier to handle later in the get route
 	const lowerCaseName = req.body.name.toLowerCase().trim();
-	const uploadedImageData = await uploadSingleImage(imagePath, lowerCaseName);
+
+	// an array of promises, containing our image urls, created by mapping through the files in the post request and sending to s3.
+	const uploadedImageData = imagePaths.map( async (image, index) => {
+		console.log('heres the image were mapping', image)
+		const imageLocationOnS3 = await uploadSingleImage(image.path, lowerCaseName + index);
+		console.log('imageURL', imageLocationOnS3);
+		return imageLocationOnS3.Location
+	})
+
+	//Handle our array of promises returned from S3 with Promise.All and save event to mongoDB in the callback.
+	Promise.all(uploadedImageData).then(async imageUrls => {
+		console.log('heres the result of promise.all', imageUrls)
+		
 	//check mongoDB for an event with the same name. if it exists, exit with 400 error
 	const events = await Events.findOne({ name: lowerCaseName });
 	if (events) {
@@ -84,8 +92,7 @@ router.post('/', upload.any('file'), async (req, res) => {
 			postal: req.body.postal,
 			latLng: req.body.latLng,
 			description: req.body.description,
-			pictures: req.body.pictures,
-			picturesArr: [uploadedImageData.Location],
+			picturesArr: imageUrls,
 		});
 		newEvent.save();
 		res.status(200).json(newEvent);
@@ -94,6 +101,7 @@ router.post('/', upload.any('file'), async (req, res) => {
 		res.status(500).send('Server error.');
 	}
 });
+})
 
 //@Route  api/events
 //@description  GET events to display on mainpage in promo widget / cards.
@@ -108,7 +116,6 @@ router.get('/:number', async (req, res) => {
 		} else {
 			res.status(200).json(allEvents.slice(0, numberOfEventsToDisplay));
 		}
-		// res.status(200).json(allEvents);
 	} catch (error) {
 		console.log(error);
 		res.status(500).send('Server error.');

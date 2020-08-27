@@ -1,3 +1,4 @@
+/** @format */
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +10,7 @@ import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import ImageCarousel from './ImageCarousel';
 import spinner from '../assets/spinner.gif';
 
-//component for displaying small amount of data from many events on one page.
+//component for previewing event information
 const EventCard = ({ promoState }) => {
 	//destructure data from promoState prop
 	const {
@@ -20,10 +21,10 @@ const EventCard = ({ promoState }) => {
 		pictures,
 		startDateTime,
 		latLng,
-		picturesArr
+		picturesArr,
 	} = promoState;
-	console.log(picturesArr)
-	//format the name of the event with dashes instead of spaces, and
+
+	//format the name of the event with dashes instead of spaces
 	const formattedName = name
 		.split(' ')
 		.filter((char) => char != '')
@@ -45,22 +46,22 @@ const EventCard = ({ promoState }) => {
 	//instantiate a date object and format to be human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
-	//handle function to expand promo card
+	//handler function to expand promo card
 	const expand = () => {
 		setEntered(!entered);
 		setIsExpanded(!isExpanded);
 	};
 
 	// creates an array of image urls by parsing the state variable, pictures, which is saved as a string.
-	const pictureArray = pictures
-		.replace(/\n/g, ' ')
-		.split(' ')
-		.filter((picture) => picture !== '');
+	// const pictureArray = pictures
+	// 	.replace(/\n/g, ' ')
+	// 	.split(' ')
+	// 	.filter((picture) => picture !== '');
 
 	//handler function for setting coordinates
-	const handleSetCoords = (newCoords) => {
-		setCoords(newCoords);
-	};
+	// const handleSetCoords = (newCoords) => {
+	// 	setCoords(newCoords);
+	// };
 
 	return (
 		<div>
@@ -162,7 +163,8 @@ const EventCard = ({ promoState }) => {
 														<div className='mx-auto'>
 															<ImageCarousel pictureArray={picturesArr} />
 															{/* parse stringified object latLng and validate before rendering leaflet map */}
-															{JSON.parse(latLng).lng && JSON.parse(latLng).lat !== '' ? (
+															{JSON.parse(latLng).lng &&
+															JSON.parse(latLng).lat !== '' ? (
 																<EventLocationMap coords={JSON.parse(latLng)} />
 															) : (
 																<img src={spinner} />

@@ -122,6 +122,7 @@ const App = () => {
 
 	//this function handles saving image files to state.
 	const handleFileUpload = (files) => {
+		console.log(files)
 		setPromoState({...promoState, files: files})
 	}
 	

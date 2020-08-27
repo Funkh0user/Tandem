@@ -25,8 +25,10 @@ const CreateEvent = ({
 	const [expanded, setExpanded] = useState(null);
 	const [step, setStep] = useState(0);
 	const [entered, setEntered] = useState(true);
+
 	const [showFormAlert, setShowFormAlert] = useState(false);
 	const showForms = () => setExpanded(!expanded);
+	//a function to that will alert the user when they have not entered data into an input
 	const handleShowFormAlert = () => {
 		// setEntered(!entered);
 		setShowFormAlert(!showFormAlert);
@@ -105,12 +107,11 @@ const CreateEvent = ({
 		handleSetDateTime();
 	};
 
-	//A function for saving an image file to state
+	//A function for saving an image(s) file to state
 	const handleMyFileUpload = async (e) => {
 		let fileUpload;
 		if (e.target) {
-			fileUpload = e.target.files[0];
-			console.log(fileUpload);
+			fileUpload = e.target.files;
 			handleFileUpload(fileUpload);
 		}
 	};
@@ -122,16 +123,22 @@ const CreateEvent = ({
 		let keyValuePairs = Object.entries(promoState);
 		const data = new FormData();
 		for (let pair of keyValuePairs) {
-			console.log(pair);
 			data.append(pair[0], pair[1]);
 		}
 		//overwrite latlng field with properly encoded (stringified) JSON object
 		data.set('latLng', JSON.stringify(promoState.latLng));
+		//FileList object has no forEach method, so doing it manually......append each file to our data object...(formData() )
+		for (let i = 0; i < promoState.files.length - 1; i++) {
+			data.append('file', promoState.files[i]);
+		}
 		//update mongoDB with new event.
 		try {
 			saveEvent(data).then((result) => {
 				//update react state with new event if there is no duplicate event error.
+				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
+
 				if (result) {
+					console.log(result);
 					handleSetAllEvents(result);
 					//redirect to homepage
 					history.push('/');
@@ -144,6 +151,7 @@ const CreateEvent = ({
 			//if there is a mongoDB error, log it.
 		} catch (error) {
 			console.log(error);
+			return null;
 		}
 	};
 
@@ -393,7 +401,8 @@ const CreateEvent = ({
 																					name='file'
 																					type='file'
 																					accept='.jpg, .jpeg, .png, .svg'
-																					onChange={handleMyFileUpload}></input>
+																					onChange={handleMyFileUpload}
+																					multiple></input>
 																			</div>
 																		);
 																	default:

@@ -5,12 +5,15 @@ import { RiMenu2Line } from 'react-icons/ri';
 import { FiMessageSquare } from 'react-icons/fi';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import NavigationContext from './context/navigationContext/NavigationContext'
+//a component that creates our navigation bar at the bottom of the page.
 const Nav = () => {
     const navigationContext = useContext(NavigationContext)
     const [selected, setSelected] = useState('');
 
       useEffect(() => {
+        //get currently selected nav menu element and set it to state so it can be styled as selected.
         setSelected(document.activeElement.name);
+        //get the window location and set the theme color accordingly.
         switch (navigationContext.location) {
           case 'http://localhost:3000/':
             colorSelector('blue');
