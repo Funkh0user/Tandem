@@ -9,7 +9,7 @@ const Event = (props) => {
 	const {
 		params: { eventName },
 	} = props.match;
-
+	
 	//create some state to hold data about the event the user is viewing
 	const [eventState, setEventState] = useState({});
 	const [coords, setCoords] = useState({
@@ -25,6 +25,7 @@ const Event = (props) => {
 			`http://localhost:3001/api/events/event/${name}`
 		).then(async (result) => {
 			const newData = await result.json();
+			console.log(newData)
 			//here we double check that the event name in the arguement to getEvent and the event returned from the server are the same before setting to state
 			if (newData.name === eventName.split('-').join(' ')) {
 				handleSetEventState(newData);
@@ -50,7 +51,7 @@ const Event = (props) => {
 		getEvent(eventName);
 	}, [eventName]);
 
-
+	console.log(eventState)
 	return (
 		<div className='m-5'>
 			<EventPageCard

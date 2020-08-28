@@ -18,7 +18,6 @@ const EventCard = ({ promoState }) => {
 		type,
 		address,
 		description,
-		pictures,
 		startDateTime,
 		latLng,
 		picturesArr,
@@ -51,17 +50,6 @@ const EventCard = ({ promoState }) => {
 		setEntered(!entered);
 		setIsExpanded(!isExpanded);
 	};
-
-	// creates an array of image urls by parsing the state variable, pictures, which is saved as a string.
-	// const pictureArray = pictures
-	// 	.replace(/\n/g, ' ')
-	// 	.split(' ')
-	// 	.filter((picture) => picture !== '');
-
-	//handler function for setting coordinates
-	// const handleSetCoords = (newCoords) => {
-	// 	setCoords(newCoords);
-	// };
 
 	return (
 		<div>

@@ -1,3 +1,4 @@
+/** @format */
 
 require('dotenv').config();
 const fs = require('fs');
@@ -22,7 +23,7 @@ const uploadSingleImage = async (imagePath, nameToApply) => {
 		Key: nameToApply,
 		Body: imageData,
 		ContentType: 'image/jpg',
-		ACL: 'public-read'
+		ACL: 'public-read',
 	};
 	//s3.upload returns asyncronously and must be wrapped in a promise
 	const imageUploadPromise = new Promise((resolve, reject) => {
@@ -45,63 +46,68 @@ const storage = multer.diskStorage({
 });
 
 //initiate multer middleware for handling enctype: multipart-form
-const upload = multer({storage});
+//TODO limit upload size to 1 mb each image.
+//TODO improve error message / validation for number of pictures and size of pictures
+const upload = multer({
+	storage: storage,
+	limits: {
+		filesize: 1028 * 1028,
+	},
+});
 
 //@route    api/events
 //@description    POST new event
-router.post('/', upload.any('file'), async (req, res, next) => {
-
-	console.log('here are the files you sent to the server', req.files)
+router.post('/', upload.array('file', 4), async (req, res, next) => {
+	console.log('here are the files you sent to the server', req.files);
 	//get the files paths on the server which we saved via multer from the post request.
-	const imagePaths = req.files
+	const imagePaths = req.files;
 	//trim whitespace from eventName and make the name lowercase so its easier to handle later in the get route
 	const lowerCaseName = req.body.name.toLowerCase().trim();
 
 	// an array of promises, containing our image urls, created by mapping through the files in the post request and sending to s3.
-	const uploadedImageData = imagePaths.map( async (image, index) => {
-		console.log('heres the image were mapping', image)
-		const imageLocationOnS3 = await uploadSingleImage(image.path, lowerCaseName + index);
+	const uploadedImageData = imagePaths.map(async (image, index) => {
+		console.log('heres the image were mapping', image);
+		const imageLocationOnS3 = await uploadSingleImage(
+			image.path,
+			lowerCaseName + index
+		);
 		console.log('imageURL', imageLocationOnS3);
-		return imageLocationOnS3.Location
-	})
+		return imageLocationOnS3.Location;
+	});
 
 	//Handle our array of promises returned from S3 with Promise.All and save event to mongoDB in the callback.
-	Promise.all(uploadedImageData).then(async imageUrls => {
-		console.log('heres the result of promise.all', imageUrls)
-		
-	//check mongoDB for an event with the same name. if it exists, exit with 400 error
-	const events = await Events.findOne({ name: lowerCaseName });
-	if (events) {
-		return res.status(400).json({ errorMsg: 'Event already exists.' });
-	}
-	//save event to mongoDB
-	try {
-		const newEvent = new Events({
-			name: lowerCaseName,
-			type: req.body.type,
-			description: req.body.description,
-			startDate: req.body.startDate,
-			startTime: req.body.startTime,
-			startDateTime: req.body.startDateTime,
-			endDate: req.body.endDate,
-			endTime: req.body.endTime,
-			endDateTime: req.body.endDateTime,
-			address: req.body.address,
-			city: req.body.city,
-			state: req.body.state,
-			postal: req.body.postal,
-			latLng: req.body.latLng,
-			description: req.body.description,
-			picturesArr: imageUrls,
-		});
-		newEvent.save();
-		res.status(200).json(newEvent);
-	} catch (error) {
-		console.log(error);
-		res.status(500).send('Server error.');
-	}
+	Promise.all(uploadedImageData).then(async (imageUrls) => {
+		console.log('heres the result of promise.all', imageUrls);
+
+		//check mongoDB for an event with the same name. if it exists, exit with 400 error
+		const events = await Events.findOne({ name: lowerCaseName });
+		if (events) {
+			return res.status(400).json({ errorMsg: 'Event already exists.' });
+		}
+		//save event to mongoDB
+		try {
+			const newEvent = new Events({
+				name: lowerCaseName,
+				type: req.body.type,
+				description: req.body.description,
+				startDate: req.body.startDate,
+				startTime: req.body.startTime,
+				startDateTime: req.body.startDateTime,
+				endDate: req.body.endDate,
+				endTime: req.body.endTime,
+				endDateTime: req.body.endDateTime,
+				latLng: req.body.latLng,
+				description: req.body.description,
+				picturesArr: imageUrls,
+			});
+			newEvent.save();
+			res.status(200).json(newEvent);
+		} catch (error) {
+			console.log(error);
+			res.status(500).send('Server error.');
+		}
+	});
 });
-})
 
 //@Route  api/events
 //@description  GET events to display on mainpage in promo widget / cards.

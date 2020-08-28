@@ -11,10 +11,10 @@ import { Link } from 'react-router-dom';
 //child component to Event.js
 const EventPageCard = ({ eventState}) => {
 	//destructure event state.
-	const { startDateTime, name, type, description, pictureArr} = eventState;
+	const { startDateTime, name, type, description, picturesArr} = eventState;
 	//instantiate a new Date object, and format it to be more human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
-
+	console.log(picturesArr)
 	return (
 		<div className='flex-col'>
 			<h1 className='rounded-t bg-blue-400 text-center text-white text-3xl break-words'>
@@ -28,7 +28,7 @@ const EventPageCard = ({ eventState}) => {
 			</h1>
 			<div className='flex p-5 rounded bg-white shadow-lg text-center'>
 				<div className='flex-col flex-1 justify-center items-center px-5'>
-					{pictureArr !== '' && <ImageCarousel pictureArray={pictureArr} />}
+					{picturesArr !== '' && <ImageCarousel pictureArray={picturesArr} />}
 					<div className='flex justify-around items-center text-center'>
 						<div className='p-2 flex flex-col items-center'>
 							<AiOutlineCalendar className='text-4xl text-blue-400' />

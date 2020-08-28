@@ -50,6 +50,7 @@ const CreateEvent = ({
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
+			return {error: error}
 		}
 	};
 
@@ -128,19 +129,24 @@ const CreateEvent = ({
 		//overwrite latlng field with properly encoded (stringified) JSON object
 		data.set('latLng', JSON.stringify(promoState.latLng));
 		//FileList object has no forEach method, so doing it manually......append each file to our data object...(formData() )
-		for (let i = 0; i < promoState.files.length - 1; i++) {
+		for (let i = 0; i < promoState.files.length ; i++) {////////
 			data.append('file', promoState.files[i]);
 		}
 		//update mongoDB with new event.
 		try {
 			saveEvent(data).then((result) => {
+				console.log(result)
 				//update react state with new event if there is no duplicate event error.
 				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
 
-				if (result) {
-					console.log(result);
+				if (result.error) {
+					console.log(result.error);
+					return null
+				} else if(!result.error) {
+					console.log(result)
 					handleSetAllEvents(result);
 					//redirect to homepage
+					//TODO make sure promoState is cleared 
 					history.push('/');
 					//if theres an error, log it.
 				} else {
@@ -376,23 +382,7 @@ const CreateEvent = ({
 																	case 6:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																				{/* <p className='p-16 text-center'>
-																					Links to Images of your event.
-																				</p>
-																				<label
-																					htmlFor='pictures'
-																					className='text-xs'>
-																					Image URLs:
-																				</label>
-																				<textarea
-																					name='pictures'
-																					id='pictures'
-																					cols='10'
-																					rows='10'
-																					value={promoState.pictures}
-																					onChange={handlePromoStateChange}
-																					className='border border-solid w-full'
-																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea> */}
+															
 																				<label htmlFor='file'>
 																					Uplaod Images
 																				</label>

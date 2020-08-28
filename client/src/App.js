@@ -26,7 +26,6 @@ const App = () => {
 		endDateTime: '',
 		latLng: {},
 		description: '',
-		pictures: '', 
 		picturesArr: [],
 		files: null,
 	});
