@@ -11,8 +11,8 @@ import ImageCarousel from './ImageCarousel';
 import spinner from '../assets/spinner.gif';
 
 //component for previewing event information
-const EventCard = ({ promoState }) => {
-	//destructure data from promoState prop
+const EventCard = ({ eventState }) => {
+	//destructure data from eventState prop
 	const {
 		name,
 		type,
@@ -21,7 +21,7 @@ const EventCard = ({ promoState }) => {
 		startDateTime,
 		latLng,
 		picturesArr,
-	} = promoState;
+	} = eventState;
 
 	//format the name of the event with dashes instead of spaces
 	const formattedName = name
@@ -32,12 +32,6 @@ const EventCard = ({ promoState }) => {
 
 	//local state variable controls if card is expanded or not
 	const [isExpanded, setIsExpanded] = useState(false);
-
-	// state variable for setting location in leaflet maps.
-	const [coords, setCoords] = useState({
-		lat: '',
-		lng: '',
-	});
 
 	//state variable for triggering react-transition-group
 	const [entered, setEntered] = useState(true);
@@ -91,6 +85,12 @@ const EventCard = ({ promoState }) => {
 																		.join(' ')}
 															</p>
 														</h1>
+														{/* {picturesArr && (
+															<img
+																src={picturesArr[0]}
+																className='w-8/12 mx-auto m-2'
+															/>
+														)} */}
 														<img
 															src={picturesArr[0]}
 															className='w-8/12 mx-auto m-2'
@@ -149,13 +149,17 @@ const EventCard = ({ promoState }) => {
 															</button>
 														</h1>
 														<div className='mx-auto'>
+															{/* {picturesArr && (
+																<ImageCarousel pictureArray={picturesArr} />
+															)} */}
 															<ImageCarousel pictureArray={picturesArr} />
-															{/* parse stringified object latLng and validate before rendering leaflet map */}
-															{JSON.parse(latLng).lng &&
-															JSON.parse(latLng).lat !== '' ? (
-																<EventLocationMap coords={JSON.parse(latLng)} />
+															{/* parse object latLng and validate before rendering leaflet map */}
+															{/*  here, latlng doesn't need to be parsed because it came from local state and not the server*/}
+															{latLng.lng &&
+															latLng.lat !== '' ? (
+																<EventLocationMap coords={latLng} />//////////
 															) : (
-																<img src={spinner} />
+																<img src={spinner} className='mx-auto'/>
 															)}
 														</div>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>

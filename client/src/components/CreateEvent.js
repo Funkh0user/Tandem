@@ -22,22 +22,27 @@ const CreateEvent = ({
 }) => {
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
-	const [expanded, setExpanded] = useState(null);
 	const [step, setStep] = useState(0);
 	const [entered, setEntered] = useState(true);
+	
+	const [fileUploadError, setFileUploadError] = useState(false)
+	const handleSetFileUploadError = (value) => {
+		setFileUploadError(value)
+	}
+
+	const [isExpanded, setIsExpanded] = useState(null);
+	const handleSetIsExpanded = () => setIsExpanded(!isExpanded);
 
 	const [showFormAlert, setShowFormAlert] = useState(false);
-	const showForms = () => setExpanded(!expanded);
 	//a function to that will alert the user when they have not entered data into an input
 	const handleShowFormAlert = () => {
-		// setEntered(!entered);
 		setShowFormAlert(!showFormAlert);
 		setTimeout(() => {
 			setShowFormAlert();
 		}, 4000);
 	};
 
-	//A function that posts data to the server / mongoDB
+	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
 		const result = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
@@ -50,11 +55,11 @@ const CreateEvent = ({
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
-			return {error: error}
+			return {error: 'There was a problem saving this event. Please try again.'}
 		}
 	};
 
-	//A function for keeping track of what section of the event creation form should be rendered...
+	//A function for keeping track of what section of the event creation form is being rendered...
 	const handleSetStep = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
@@ -103,15 +108,15 @@ const CreateEvent = ({
 		}
 	};
 
-	//wrapper function to set an iso 8601 / rfc 3339 compliant date-time. triggered by submit button on form. specifically wasn't working in the handlesubmit function below
-	const handleClick = () => {
-		handleSetDateTime();
-	};
-
 	//A function for saving an image(s) file to state
-	const handleMyFileUpload = async (e) => {
+	const validateFiles = async (e) => {
 		let fileUpload;
 		if (e.target) {
+			//if the file(s) are to big or there are to many, trigger error message
+			//TODO disable submit button if files are invalid, or do this validation in handleSubmit and return if invalid.
+			for(let i = 0; i < e.target.files.length; i++ ) {
+				if(e.target.files[i].size > 1000000 || e.target.files.length > 4) handleSetFileUploadError(true) 
+			}
 			fileUpload = e.target.files;
 			handleFileUpload(fileUpload);
 		}
@@ -122,29 +127,29 @@ const CreateEvent = ({
 		e.preventDefault();
 		// prepare FormData() object to send multipart form data with text fields and picture files to backend.
 		let keyValuePairs = Object.entries(promoState);
-		const data = new FormData();
+		const formDataObject = new FormData();
 		for (let pair of keyValuePairs) {
-			data.append(pair[0], pair[1]);
+			formDataObject.append(pair[0], pair[1]);
 		}
-		//overwrite latlng field with properly encoded (stringified) JSON object
-		data.set('latLng', JSON.stringify(promoState.latLng));
-		//FileList object has no forEach method, so doing it manually......append each file to our data object...(formData() )
+		//overwrite latlng field with properly encoded (stringified) JSON object (multipart form data cannot accept complex data types)
+		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
+		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
 		for (let i = 0; i < promoState.files.length ; i++) {////////
-			data.append('file', promoState.files[i]);
+			if(promoState.files[i].size > 1000000) return handleSetFileUploadError(true)
+			formDataObject.append('file', promoState.files[i]);
 		}
-		//update mongoDB with new event.
+		//Send event to server.
 		try {
-			saveEvent(data).then((result) => {
+			saveEvent(formDataObject).then((result) => {
 				console.log(result)
 				//update react state with new event if there is no duplicate event error.
 				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
-
+				//TODO possibly change this back to relying on server response to set state
 				if (result.error) {
-					console.log(result.error);
+					console.log(JSON.stringify(result));
 					return null
 				} else if(!result.error) {
-					console.log(result)
-					handleSetAllEvents(result);
+					handleSetAllEvents(result.imageUrls, promoState);
 					//redirect to homepage
 					//TODO make sure promoState is cleared 
 					history.push('/');
@@ -166,9 +171,9 @@ const CreateEvent = ({
 		navigationContext.changeTheme();
 	}, [navigationContext.location]);
 
-	//widget is either open or closed based on state variable expanded.
+	//widget is either open or closed based on state variable isExpanded.
 	//return corresponding jsx
-	if (!expanded) {
+	if (!isExpanded) {
 		return (
 			<div className='create-promo closed' data-cy='closed'>
 				<div className='w-full h-48 bg-green-400'>
@@ -180,7 +185,7 @@ const CreateEvent = ({
 						<button
 							data-cy='toggle-open'
 							className='text-2xl'
-							onClick={showForms}>
+							onClick={handleSetIsExpanded}>
 							<GoChevronDown style={{ color: 'white' }} />
 						</button>
 					</h2>
@@ -198,7 +203,7 @@ const CreateEvent = ({
 					<div className='w-full rounded-t-md text-center bg-green-400'>
 						<h2 className='text-center text-3xl p-5 text-white'>
 							<p>Create Event</p>
-							<button className='text-2xl' onClick={showForms}>
+							<button className='text-2xl' onClick={handleSetIsExpanded}>
 								<GoChevronUp className='text-white' />
 							</button>
 						</h2>
@@ -382,7 +387,7 @@ const CreateEvent = ({
 																	case 6:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-															
+																				{fileUploadError && <div>Theres a problem with your Image(s). Please try again.</div> }
 																				<label htmlFor='file'>
 																					Uplaod Images
 																				</label>
@@ -391,7 +396,7 @@ const CreateEvent = ({
 																					name='file'
 																					type='file'
 																					accept='.jpg, .jpeg, .png, .svg'
-																					onChange={handleMyFileUpload}
+																					onChange={validateFiles}
 																					multiple></input>
 																			</div>
 																		);
@@ -420,7 +425,7 @@ const CreateEvent = ({
 											<button
 												type='submit'
 												className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
-												onClick={handleClick}>
+												onClick={handleSetDateTime}>
 												Submit
 											</button>
 										) : (

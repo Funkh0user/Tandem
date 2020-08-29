@@ -46,13 +46,13 @@ const storage = multer.diskStorage({
 });
 
 //initiate multer middleware for handling enctype: multipart-form
-//TODO limit upload size to 1 mb each image.
-//TODO improve error message / validation for number of pictures and size of pictures
 const upload = multer({
 	storage: storage,
 	limits: {
 		filesize: 1028 * 1028,
 	},
+	//TODO improve error message / validation for number of pictures and size of pictures use fileFilter: (req, file, cb )=> {}
+
 });
 
 //@route    api/events
@@ -101,9 +101,9 @@ router.post('/', upload.array('file', 4), async (req, res, next) => {
 				picturesArr: imageUrls,
 			});
 			newEvent.save();
-			res.status(200).json(newEvent);
+			res.status(200).json({imageUrls: imageUrls});
 		} catch (error) {
-			console.log(error);
+			console.log('there was an error posting this event', error);
 			res.status(500).send('Server error.');
 		}
 	});

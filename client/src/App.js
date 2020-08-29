@@ -62,13 +62,20 @@ const App = () => {
 			console.log(newData)
 			setAllEvents(newData);
 		} catch (error) {
-			console.log(error);
+			console.log('There was an error getting events from the server: ', error);
 		}
 	};
 
 	//wrapper function to add a new event to allEvents
-	const handleSetAllEvents = (newEvent) => {
-		setAllEvents([...allEvents, newEvent]);
+	const handleSetAllEvents = (arrayOfUrls, eventState) => {
+		console.log(arrayOfUrls)
+		console.log(eventState)
+
+		const myObject = {
+			...eventState,
+			picturesArr: arrayOfUrls
+		}
+		setAllEvents([...allEvents, myObject]);
 	};
 
 	//wrapper function for updating controlled form state
@@ -125,9 +132,8 @@ const App = () => {
 		setPromoState({...promoState, files: files})
 	}
 	
-	//once on mount, initiate intersection observer on #bottom-boundary elements
+	//once, on mount, initiate intersection observer on #bottom-boundary element
 	useEffect(() => {
-		//loads more events when viewport intersects with #bottom-boundary
 		observer.observe(document.querySelector('#bottom-boundary'));
 		// TODO set up observer.unobserve
 	}, []);
