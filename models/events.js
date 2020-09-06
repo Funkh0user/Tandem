@@ -11,13 +11,8 @@ const eventSchema = new mongoose.Schema({
     endDate: String,
     endTime: String,
     endDateTime: String,
-    address: String,
-    city: String,
-    state: String,
-    postal: String,
     latLng: Object,
     description: String,
-    pictures: String,
     picturesArr: Array
 })
 

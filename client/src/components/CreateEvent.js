@@ -1,3 +1,4 @@
+/** @format */
 
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -17,45 +18,55 @@ const CreateEvent = ({
 	handleSetDateTime,
 	handleDefaultEndDateTime,
 	handleSetLatLng,
+	handleFileUpload,
 }) => {
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
-	const [expanded, setExpanded] = useState(null);
 	const [step, setStep] = useState(0);
 	const [entered, setEntered] = useState(true);
+
+	const [fileUploadError, setFileUploadError] = useState(false);
+	const handleSetFileUploadError = (value) => {
+		setFileUploadError(value);
+	};
+
+	const [isExpanded, setIsExpanded] = useState(null);
+	const handleSetIsExpanded = () => setIsExpanded(!isExpanded);
+
 	const [showFormAlert, setShowFormAlert] = useState(false);
-	const showForms = () => setExpanded(!expanded);
+	//a function to that will alert the user when they have not entered data into an input
 	const handleShowFormAlert = () => {
-		// setEntered(!entered);
 		setShowFormAlert(!showFormAlert);
 		setTimeout(() => {
 			setShowFormAlert();
 		}, 4000);
 	};
 
-	//posts data to server / mongoDB
+	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
 		const result = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
+			body: data,
 		});
 		try {
 			const newData = await result.json();
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
+			return {
+				error: 'There was a problem saving this event. Please try again.',
+			};
 		}
 	};
-	//A function for keeping track of what section of the event creation form should be rendered..
+
+	//A function for keeping track of what section of the event creation form is being rendered...
 	const handleSetStep = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
 		if (e.target.name === 'nextButton') {
+			//A series of checks to validate form input has been entered at each step
 			if (step === 0 && promoState.name === '') {
 				handleShowFormAlert();
 			} else if (step === 1 && promoState.type === '') {
@@ -67,13 +78,16 @@ const CreateEvent = ({
 				) {
 					handleShowFormAlert();
 				} else {
+					//trigger react-transition-group animation
 					setEntered(!entered);
+					//increment state of step
 					step <= 5 && setStep(step + 1);
 				}
 			} else if (step === 3) {
 				if (promoState.startDate === '' || promoState.startTime === '') {
 					handleShowFormAlert();
 				} else {
+					// this function sets the values of the end date and end time html elements relative to the start date and start time values.
 					handleDefaultEndDateTime();
 					setEntered(!entered);
 					step <= 5 && setStep(step + 1);
@@ -90,47 +104,81 @@ const CreateEvent = ({
 				step <= 5 && setStep(step + 1);
 			}
 		} else if (e.target.name === 'backButton') {
+			//if the user is pressing the back button, trigger react animation group and decrement state of step.
 			setEntered(!entered);
 			step >= 0 && setStep(step - 1);
 		}
 	};
 
-	//wrapper function to set an iso 8601 / rfc 3339 compliant date-time. triggered by submit button on form. specifically wasn't working in the handlesubmit function below
-	const handleClick = () => {
-		// handleSetPicturesArray()///// TODO why does one or the other fire but not both?
-		handleSetDateTime(); //// TODO why does one or the other fire but not both?
+	//A function for saving an image(s) file to state
+	const validateFiles = async (e) => {
+		let fileUpload;
+		if (e.target) {
+			//if the file(s) are to big or there are to many, trigger error message
+			//TODO disable submit button if files are invalid, or do this validation in handleSubmit and return if invalid.
+			for (let i = 0; i < e.target.files.length; i++) {
+				if (e.target.files[i].size > 1000000 || e.target.files.length > 4)
+					handleSetFileUploadError(true);
+			}
+			fileUpload = e.target.files;
+			handleFileUpload(fileUpload);
+		}
 	};
 
 	const handleSubmit = (e) => {
 		//prevent default form behavior.
 		e.preventDefault();
-		//update mongoDB with new event.
+		// prepare FormData() object to send multipart form data with text fields and picture files to backend.
+		let keyValuePairs = Object.entries(promoState);
+		const formDataObject = new FormData();
+		for (let pair of keyValuePairs) {
+			formDataObject.append(pair[0], pair[1]);
+		}
+		//overwrite latlng field with properly encoded (stringified) JSON object (multipart form data cannot accept complex data types)
+		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
+		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
+		for (let i = 0; i < promoState.files.length; i++) {
+			////////
+			if (promoState.files[i].size > 1000000)
+				return handleSetFileUploadError(true);
+			formDataObject.append('file', promoState.files[i]);
+		}
+		//Send event to server.
 		try {
-			saveEvent(promoState).then((result) => {
+			saveEvent(formDataObject).then((result) => {
+				console.log(result);
 				//update react state with new event if there is no duplicate event error.
-				if (!result.errorMsg) {
-					handleSetAllEvents(result);
+				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
+				//TODO possibly change this back to relying on server response to set state
+				if (result.error) {
+					console.log(JSON.stringify(result));
+					return null;
+				} else if (!result.error) {
+					handleSetAllEvents(result.imageUrls, promoState);
 					//redirect to homepage
+					//TODO make sure promoState is cleared
 					history.push('/');
 					//if theres an error, log it.
 				} else {
-					console.log('there was an error', result.errorMsg);
+					console.log('there was an error saving the event.');
 					return null;
 				}
 			});
 			//if there is a mongoDB error, log it.
 		} catch (error) {
 			console.log(error);
+			return null;
 		}
 	};
 
+	//anytime the window location changes, update the theme, via context.
 	useEffect(() => {
 		navigationContext.changeTheme();
 	}, [navigationContext.location]);
 
-	//widget is either open or closed based on state variable expanded.
+	//widget is either open or closed based on state variable isExpanded.
 	//return corresponding jsx
-	if (!expanded) {
+	if (!isExpanded) {
 		return (
 			<div className='create-promo closed' data-cy='closed'>
 				<div className='w-full h-48 bg-green-400'>
@@ -142,7 +190,7 @@ const CreateEvent = ({
 						<button
 							data-cy='toggle-open'
 							className='text-2xl'
-							onClick={showForms}>
+							onClick={handleSetIsExpanded}>
 							<GoChevronDown style={{ color: 'white' }} />
 						</button>
 					</h2>
@@ -160,7 +208,7 @@ const CreateEvent = ({
 					<div className='w-full rounded-t-md text-center bg-green-400'>
 						<h2 className='text-center text-3xl p-5 text-white'>
 							<p>Create Event</p>
-							<button className='text-2xl' onClick={showForms}>
+							<button className='text-2xl' onClick={handleSetIsExpanded}>
 								<GoChevronUp className='text-white' />
 							</button>
 						</h2>
@@ -171,7 +219,7 @@ const CreateEvent = ({
 							<form className='w-3/4' onSubmit={handleSubmit}>
 								<div>
 									<div className='w-full flex flex-col justify-center align-center'>
-										{/* these components are from react-transition-group, they handle animation of the form inputs. */}
+										{/* these components are from react-transition-group, they handle animation of the form inputs when the mount and unmount. */}
 										<SwitchTransition mode={'out-in'}>
 											<CSSTransition
 												key={entered}
@@ -186,7 +234,7 @@ const CreateEvent = ({
 												}}
 												appear
 												unmountOnExit>
-												{/* this componenet takes an anonymous function as a child. the functions responsibility is to return the elements that will be animated when the enter or leave the dom */}
+												{/* this componenet takes an anonymous function as a child. the functions responsibility is to return the elements that will be animated when they enter or leave the dom */}
 												{() => {
 													return (
 														<div>
@@ -195,7 +243,7 @@ const CreateEvent = ({
 																	Please enter a value
 																</div>
 															)}
-															{/* an iife is needed here to correctly return the switch statement containing the different form elements transition in and out of the dom. */}
+															{/* an IIFE is needed here to correctly return the switch statement containing the different form elements transition in and out of the dom. */}
 															{(() => {
 																switch (step) {
 																	case 0:
@@ -235,17 +283,17 @@ const CreateEvent = ({
 																					onChange={handlePromoStateChange}
 																					className='m-5 border border-solid bg-transparent leading-loose'>
 																					<option
-																						name='music event'
-																						value='music event'
-																						onChange={handlePromoStateChange}
-																						selected>
-																						Music Event
-																					</option>
-																					<option
 																						name='volunteer work'
 																						value='volunteer work'
-																						onChange={handlePromoStateChange}>
+																						onChange={handlePromoStateChange}
+																						selected>
 																						Volunteer work
+																					</option>
+																					<option
+																						name='music event'
+																						value='music event'
+																						onChange={handlePromoStateChange}>
+																						Music Event
 																					</option>
 																				</select>
 																			</div>
@@ -344,23 +392,22 @@ const CreateEvent = ({
 																	case 6:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																				<p className='p-16 text-center'>
-																					Links to Images of your event.
-																				</p>
-																				<label
-																					htmlFor='pictures'
-																					className='text-xs'>
-																					Image URLs:
+																				{fileUploadError && (
+																					<div>
+																						Theres a problem with your Image(s).
+																						Please try again.
+																					</div>
+																				)}
+																				<label htmlFor='file'>
+																					Uplaod Images
 																				</label>
-																				<textarea
-																					name='pictures'
-																					id='pictures'
-																					cols='10'
-																					rows='10'
-																					value={promoState.pictures}
-																					onChange={handlePromoStateChange}
-																					className='border border-solid w-full'
-																					placeholder="Add as many URLs as you'd like, each on a new line."></textarea>
+																				<input
+																					id='file'
+																					name='file'
+																					type='file'
+																					accept='.jpg, .jpeg, .png, .svg'
+																					onChange={validateFiles}
+																					multiple></input>
 																			</div>
 																		);
 																	default:
@@ -388,7 +435,7 @@ const CreateEvent = ({
 											<button
 												type='submit'
 												className='p-2 m-2 text-center text-white rounded bg-green-500 hover:bg-green-700 transform hover:scale-105 transition-all ease-in-out duration-500 '
-												onClick={handleClick}>
+												onClick={handleSetDateTime}>
 												Submit
 											</button>
 										) : (

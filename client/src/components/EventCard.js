@@ -10,30 +10,22 @@ import { GoChevronDown, GoChevronUp } from 'react-icons/go';
 import ImageCarousel from './ImageCarousel';
 import spinner from '../assets/spinner.gif';
 
-//component for displaying small amount of data from many events on one page.
-const EventCard = ({ promoState }) => {
-	//destructure promoState prop
+//component for previewing event information
+const EventCard = ({ eventState }) => {
+	//destructure data from eventState prop
 	const {
 		name,
 		type,
-		// startDate,
-		// startTime,
-		// endDate,
-		// endTime,
 		address,
-		city,
-		state,
-		postal,
 		description,
-		// links,
-		pictures,
-		// picturesArr,
-		// files,
 		startDateTime,
 		latLng,
-	} = promoState;
+		picturesArr,
+	} = eventState;
 
-	//format the name of the event with dashes instead of spaces, and
+	console.log(JSON.parse(latLng))
+	
+	//format the name of the event with dashes instead of spaces
 	const formattedName = name
 		.split(' ')
 		.filter((char) => char != '')
@@ -43,58 +35,17 @@ const EventCard = ({ promoState }) => {
 	//local state variable controls if card is expanded or not
 	const [isExpanded, setIsExpanded] = useState(false);
 
-	// state variable for setting location in leaflet maps.
-	const [coords, setCoords] = useState({
-		lat: '',
-		lng: '',
-	});
-
 	//state variable for triggering react-transition-group
 	const [entered, setEntered] = useState(true);
 
 	//instantiate a date object and format to be human readable.
 	const formattedTime = new Date(startDateTime).toLocaleDateString();
 
-	//handle function to expand promo card
+	//handler function to expand promo card
 	const expand = () => {
 		setEntered(!entered);
 		setIsExpanded(!isExpanded);
 	};
-
-	// creates an array of image urls by parsing the pictures string.
-	const pictureArray = pictures
-		.replace(/\n/g, ' ')
-		.split(' ')
-		.filter((picture) => picture !== '');
-
-	//handler function for setting coordinates
-	const handleSetCoords = (newCoords) => {
-		setCoords(newCoords);
-	};
-
-	//TODO refactor getcoords out of component
-	//Function to make api call to opencagedata to convert location address into coordinates for leaflet maps.
-	// const getCoords = async () => {
-	// 	const result = await fetch(
-	// 		`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-	// 			address
-	// 		)}%20${encodeURIComponent(city)}%20${encodeURIComponent(
-	// 			state
-	// 		)}%20${encodeURIComponent(postal)}&key=${process.env.REACT_APP_OPEN_CAGE}`
-	// 	);
-	// 	return await result.json();
-	// };
-
-	//after component mounts, get coordinates and set them into state
-	// useEffect(() => {
-	// 	console.log(promoState)
-	// 	getCoords().then((result) => {
-	// 		if (result.results[0]) {
-	// 			//set some state to these coords, pass into eventLocationMap.
-	// 			handleSetCoords(result.results[0].geometry);
-	// 		}
-	// 	});
-	// }, []);
 
 	return (
 		<div>
@@ -136,8 +87,14 @@ const EventCard = ({ promoState }) => {
 																		.join(' ')}
 															</p>
 														</h1>
+														{/* {picturesArr && (
+															<img
+																src={picturesArr[0]}
+																className='w-8/12 mx-auto m-2'
+															/>
+														)} */}
 														<img
-															src={pictureArray[0]}
+															src={picturesArr[0]}
 															className='w-8/12 mx-auto m-2'
 														/>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>
@@ -194,12 +151,17 @@ const EventCard = ({ promoState }) => {
 															</button>
 														</h1>
 														<div className='mx-auto'>
-															<ImageCarousel pictureArray={pictureArray} />
-															{/* <EventLocationMap coords={coords} /> */}
-															{latLng.lng && latLng.lat !== '' ? (
-																<EventLocationMap coords={latLng} />
+															{/* {picturesArr && (
+																<ImageCarousel pictureArray={picturesArr} />
+															)} */}
+															<ImageCarousel pictureArray={picturesArr} />
+															{/* parse object latLng and validate before rendering leaflet map */}
+															{/*  here, latlng doesn't need to be parsed because it came from local state and not the server*/}
+															{JSON.parse(latLng).lng &&
+															JSON.parse(latLng).lat !== '' ? (
+																<EventLocationMap coords={JSON.parse(latLng)} />//////////
 															) : (
-																<img src={spinner} />
+																<img src={spinner} className='mx-auto'/>
 															)}
 														</div>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>

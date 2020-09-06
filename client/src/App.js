@@ -17,20 +17,15 @@ const App = () => {
 	const [allEvents, setAllEvents] = useState([]);
 	const [promoState, setPromoState] = useState({
 		name: '',
-		type: '',
+		type: 'Volunteer Work',
 		startDate: '',
 		startTime: '',
 		startDateTime: '',
 		endDate: '',
 		endTime: '',
 		endDateTime: '',
-		address: '',
-		city: '',
-		state: '',
-		postal: '',
 		latLng: {},
 		description: '',
-		pictures: '', // TODO change to an array. modify mongoDB schema, and related code that parses the current data structure (primitive, string)
 		picturesArr: [],
 		files: null,
 	});
@@ -63,15 +58,24 @@ const App = () => {
 				`http://localhost:3001/api/events/${numberOfEvents}`
 			);
 			const newData = await events.json();
+			console.log(typeof newData)
+			console.log(newData)
 			setAllEvents(newData);
 		} catch (error) {
-			console.log(error);
+			console.log('There was an error getting events from the server: ', error);
 		}
 	};
 
 	//wrapper function to add a new event to allEvents
-	const handleSetAllEvents = (newEvent) => {
-		setAllEvents([...allEvents, newEvent]);
+	const handleSetAllEvents = (arrayOfUrls, eventState) => {
+		console.log(arrayOfUrls)
+		console.log(eventState)
+
+		const myObject = {
+			...eventState,
+			picturesArr: arrayOfUrls
+		}
+		setAllEvents([...allEvents, myObject]);
 	};
 
 	//wrapper function for updating controlled form state
@@ -122,8 +126,14 @@ const App = () => {
 		});
 	};
 
+	//this function handles saving image files to state.
+	const handleFileUpload = (files) => {
+		console.log(files)
+		setPromoState({...promoState, files: files})
+	}
+	
+	//once, on mount, initiate intersection observer on #bottom-boundary element
 	useEffect(() => {
-		//loads more events when viewport intersects with #bottom-boundary
 		observer.observe(document.querySelector('#bottom-boundary'));
 		// TODO set up observer.unobserve
 	}, []);
@@ -146,7 +156,7 @@ const App = () => {
 									handleSetDateTime={handleSetDateTime}
 									handleDefaultEndDateTime={handleDefaultEndDateTime}
 									handleSetLatLng={handleSetLatLng}
-									// handleSetPicturesArray={handleSetPicturesArray}
+									handleFileUpload={handleFileUpload}
 								/>
 							</Route>
 							<Route path='/search'>

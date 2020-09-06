@@ -9,9 +9,11 @@ import NavigationContext from './context/navigationContext/NavigationContext';
 const Home = ({ allEvents, eventStateEvents }) => {
 	const navigationContext = useContext(NavigationContext);
 
+	//anytime the window location changes, update the theme, via context.
 	useEffect(() => {
 		navigationContext.changeTheme();
 	}, [navigationContext.location]);
+
 	return (
 		<div>
 			<div className='bg-blue-400 h-48 flex'>
@@ -21,7 +23,7 @@ const Home = ({ allEvents, eventStateEvents }) => {
 				id='top-boundary'
 				className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3'>
 				{allEvents.map((event, index) => {
-					return <EventCard key={index} promoState={event} />;
+					return <EventCard key={index} eventState={event} />;
 				})}
 				<div id='bottom-boundary'></div>
 			</div>
