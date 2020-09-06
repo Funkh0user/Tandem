@@ -24,11 +24,11 @@ const CreateEvent = ({
 	let history = useHistory();
 	const [step, setStep] = useState(0);
 	const [entered, setEntered] = useState(true);
-	
-	const [fileUploadError, setFileUploadError] = useState(false)
+
+	const [fileUploadError, setFileUploadError] = useState(false);
 	const handleSetFileUploadError = (value) => {
-		setFileUploadError(value)
-	}
+		setFileUploadError(value);
+	};
 
 	const [isExpanded, setIsExpanded] = useState(null);
 	const handleSetIsExpanded = () => setIsExpanded(!isExpanded);
@@ -55,7 +55,9 @@ const CreateEvent = ({
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
-			return {error: 'There was a problem saving this event. Please try again.'}
+			return {
+				error: 'There was a problem saving this event. Please try again.',
+			};
 		}
 	};
 
@@ -114,8 +116,9 @@ const CreateEvent = ({
 		if (e.target) {
 			//if the file(s) are to big or there are to many, trigger error message
 			//TODO disable submit button if files are invalid, or do this validation in handleSubmit and return if invalid.
-			for(let i = 0; i < e.target.files.length; i++ ) {
-				if(e.target.files[i].size > 1000000 || e.target.files.length > 4) handleSetFileUploadError(true) 
+			for (let i = 0; i < e.target.files.length; i++) {
+				if (e.target.files[i].size > 1000000 || e.target.files.length > 4)
+					handleSetFileUploadError(true);
 			}
 			fileUpload = e.target.files;
 			handleFileUpload(fileUpload);
@@ -134,24 +137,26 @@ const CreateEvent = ({
 		//overwrite latlng field with properly encoded (stringified) JSON object (multipart form data cannot accept complex data types)
 		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
 		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
-		for (let i = 0; i < promoState.files.length ; i++) {////////
-			if(promoState.files[i].size > 1000000) return handleSetFileUploadError(true)
+		for (let i = 0; i < promoState.files.length; i++) {
+			////////
+			if (promoState.files[i].size > 1000000)
+				return handleSetFileUploadError(true);
 			formDataObject.append('file', promoState.files[i]);
 		}
 		//Send event to server.
 		try {
 			saveEvent(formDataObject).then((result) => {
-				console.log(result)
+				console.log(result);
 				//update react state with new event if there is no duplicate event error.
 				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
 				//TODO possibly change this back to relying on server response to set state
 				if (result.error) {
 					console.log(JSON.stringify(result));
-					return null
-				} else if(!result.error) {
+					return null;
+				} else if (!result.error) {
 					handleSetAllEvents(result.imageUrls, promoState);
 					//redirect to homepage
-					//TODO make sure promoState is cleared 
+					//TODO make sure promoState is cleared
 					history.push('/');
 					//if theres an error, log it.
 				} else {
@@ -214,7 +219,7 @@ const CreateEvent = ({
 							<form className='w-3/4' onSubmit={handleSubmit}>
 								<div>
 									<div className='w-full flex flex-col justify-center align-center'>
-										{/* these components are from react-transition-group, they handle animation of the form inputs. */}
+										{/* these components are from react-transition-group, they handle animation of the form inputs when the mount and unmount. */}
 										<SwitchTransition mode={'out-in'}>
 											<CSSTransition
 												key={entered}
@@ -229,7 +234,7 @@ const CreateEvent = ({
 												}}
 												appear
 												unmountOnExit>
-												{/* this componenet takes an anonymous function as a child. the functions responsibility is to return the elements that will be animated when the enter or leave the dom */}
+												{/* this componenet takes an anonymous function as a child. the functions responsibility is to return the elements that will be animated when they enter or leave the dom */}
 												{() => {
 													return (
 														<div>
@@ -238,7 +243,7 @@ const CreateEvent = ({
 																	Please enter a value
 																</div>
 															)}
-															{/* an iife is needed here to correctly return the switch statement containing the different form elements transition in and out of the dom. */}
+															{/* an IIFE is needed here to correctly return the switch statement containing the different form elements transition in and out of the dom. */}
 															{(() => {
 																switch (step) {
 																	case 0:
@@ -278,17 +283,17 @@ const CreateEvent = ({
 																					onChange={handlePromoStateChange}
 																					className='m-5 border border-solid bg-transparent leading-loose'>
 																					<option
-																						name='music event'
-																						value='music event'
-																						onChange={handlePromoStateChange}
-																						selected>
-																						Music Event
-																					</option>
-																					<option
 																						name='volunteer work'
 																						value='volunteer work'
-																						onChange={handlePromoStateChange}>
+																						onChange={handlePromoStateChange}
+																						selected>
 																						Volunteer work
+																					</option>
+																					<option
+																						name='music event'
+																						value='music event'
+																						onChange={handlePromoStateChange}>
+																						Music Event
 																					</option>
 																				</select>
 																			</div>
@@ -387,7 +392,12 @@ const CreateEvent = ({
 																	case 6:
 																		return (
 																			<div className='w-full h-full flex flex-col justify-center align-center'>
-																				{fileUploadError && <div>Theres a problem with your Image(s). Please try again.</div> }
+																				{fileUploadError && (
+																					<div>
+																						Theres a problem with your Image(s).
+																						Please try again.
+																					</div>
+																				)}
 																				<label htmlFor='file'>
 																					Uplaod Images
 																				</label>

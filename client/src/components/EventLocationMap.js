@@ -11,7 +11,7 @@ class EventLocationMap extends React.Component {
       this.state = {
         lat: this.props.coords.lat,
         lng: this.props.coords.lng,
-        zoom: 13
+        zoom: 8
       }
     }
     render() {

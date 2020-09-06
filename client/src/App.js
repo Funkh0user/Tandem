@@ -17,7 +17,7 @@ const App = () => {
 	const [allEvents, setAllEvents] = useState([]);
 	const [promoState, setPromoState] = useState({
 		name: '',
-		type: '',
+		type: 'Volunteer Work',
 		startDate: '',
 		startTime: '',
 		startDateTime: '',
