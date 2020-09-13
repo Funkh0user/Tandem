@@ -23,8 +23,6 @@ const EventCard = ({ eventState }) => {
 		picturesArr,
 	} = eventState;
 
-	console.log(JSON.parse(latLng))
-	
 	//format the name of the event with dashes instead of spaces
 	const formattedName = name
 		.split(' ')
@@ -87,12 +85,6 @@ const EventCard = ({ eventState }) => {
 																		.join(' ')}
 															</p>
 														</h1>
-														{/* {picturesArr && (
-															<img
-																src={picturesArr[0]}
-																className='w-8/12 mx-auto m-2'
-															/>
-														)} */}
 														<img
 															src={picturesArr[0]}
 															className='w-8/12 mx-auto m-2'
@@ -151,17 +143,13 @@ const EventCard = ({ eventState }) => {
 															</button>
 														</h1>
 														<div className='mx-auto'>
-															{/* {picturesArr && (
-																<ImageCarousel pictureArray={picturesArr} />
-															)} */}
 															<ImageCarousel pictureArray={picturesArr} />
 															{/* parse object latLng and validate before rendering leaflet map */}
 															{/*  here, latlng doesn't need to be parsed because it came from local state and not the server*/}
-															{JSON.parse(latLng).lng &&
-															JSON.parse(latLng).lat !== '' ? (
-																<EventLocationMap coords={JSON.parse(latLng)} />//////////
+															{latLng.lat !== '' ? (
+																<EventLocationMap coords={latLng} /> //////////
 															) : (
-																<img src={spinner} className='mx-auto'/>
+																<img src={spinner} className='mx-auto' />
 															)}
 														</div>
 														<span className='text-xs text-white p-2 bg-blue-400 rounded'>

@@ -68,8 +68,6 @@ const App = () => {
 
 	//wrapper function to add a new event to allEvents
 	const handleSetAllEvents = (arrayOfUrls, eventState) => {
-		console.log(arrayOfUrls)
-		console.log(eventState)
 
 		const myObject = {
 			...eventState,
