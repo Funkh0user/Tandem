@@ -8,9 +8,10 @@ class EventLocationMap extends React.Component {
     constructor(props) {
       super(props)
       console.log(props)
+      const coords = this.props.coords
       this.state = {
-        lat: this.props.coords.lat,
-        lng: this.props.coords.lng,
+        lat: coords.lat,
+        lng: coords.lng,
         zoom: 8
       }
     }

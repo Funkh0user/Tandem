@@ -102,6 +102,7 @@ router.post('/', upload.array('file', 4), async (req, res, next) => {
 			});
 			newEvent.save();
 			res.status(200).json({imageUrls: imageUrls});
+			// res.status(200).json(newEvent);
 		} catch (error) {
 			console.log('there was an error posting this event', error);
 			res.status(500).send('Server error.');

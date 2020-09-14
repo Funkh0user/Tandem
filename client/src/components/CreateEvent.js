@@ -155,6 +155,7 @@ const CreateEvent = ({
 					return null;
 				} else if (!result.error) {
 					handleSetAllEvents(result.imageUrls, promoState);
+					// handleSetAllEvents(result);
 					//redirect to homepage
 					//TODO make sure promoState is cleared
 					history.push('/');

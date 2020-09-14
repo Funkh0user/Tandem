@@ -67,12 +67,14 @@ const App = () => {
 	};
 
 	//wrapper function to add a new event to allEvents
-	const handleSetAllEvents = (arrayOfUrls, eventState) => {
-		console.log(arrayOfUrls)
-		console.log(eventState)
+	// const handleSetAllEvents = (eventState) => {
+	// 	setAllEvents([...allEvents, eventState]);
+	// };
 
+	const handleSetAllEvents = (arrayOfUrls, eventState) => {
 		const myObject = {
 			...eventState,
+			latLng: JSON.stringify(eventState.latLng),// stringify this latLng object to match behavior of saving event to server as formData() object. 
 			picturesArr: arrayOfUrls
 		}
 		setAllEvents([...allEvents, myObject]);
