@@ -22,6 +22,7 @@ const EventCard = ({ eventState }) => {
 		latLng,
 		picturesArr,
 	} = eventState;
+	console.log(latLng)
 
 	//format the name of the event with dashes instead of spaces
 	const formattedName = name
@@ -146,8 +147,8 @@ const EventCard = ({ eventState }) => {
 															<ImageCarousel pictureArray={picturesArr} />
 															{/* parse object latLng and validate before rendering leaflet map */}
 															{/*  here, latlng doesn't need to be parsed because it came from local state and not the server*/}
-															{latLng.lat !== '' ? (
-																<EventLocationMap coords={latLng} /> //////////
+															{JSON.parse(latLng).lat !== '' ? (
+																<EventLocationMap coords={JSON.parse(latLng)} /> 
 															) : (
 																<img src={spinner} className='mx-auto' />
 															)}
