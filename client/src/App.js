@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import CreateEvent from './components/CreateEvent';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
@@ -7,6 +7,7 @@ import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
 import Event from './components/Event';
 import NavigationState from './components/context/navigationContext/NavigationState';
+import ErrorPage from './components/ErrorPage'
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
@@ -30,46 +31,6 @@ const App = () => {
 		files: null,
 	});
 
-	// options for the IntersectionObserver constructor below
-	let options = {
-		root: null,
-		rootMargin: '100px',
-		threshold: 0.0,
-	};
-
-	let eventsToShow = 0;
-
-	// instantiate intersection observer.
-	const observer = new IntersectionObserver((entries) => {
-		//for each element being observed (in this case, only 1, #bottom-boundary)....
-		entries.forEach((entry) => {
-			//when the element intersects the viewport, get 6 more events from the server.
-			if (entry.isIntersecting) {
-				eventsToShow += 6;
-				getEvents(eventsToShow);
-			}
-		});
-	}, options);
-
-	//defines our backend api call to get events
-	const getEvents = async (numberOfEvents) => {
-		try {
-			const events = await fetch(
-				`http://localhost:3001/api/events/${numberOfEvents}`
-			);
-			const newData = await events.json();
-			console.log(typeof newData)
-			console.log(newData)
-			setAllEvents(newData);
-		} catch (error) {
-			console.log('There was an error getting events from the server: ', error);
-		}
-	};
-
-	//wrapper function to add a new event to allEvents
-	// const handleSetAllEvents = (eventState) => {
-	// 	setAllEvents([...allEvents, eventState]);
-	// };
 
 	const handleSetAllEvents = (arrayOfUrls, eventState) => {
 		const myObject = {
@@ -133,18 +94,12 @@ const App = () => {
 		console.log(files)
 		setPromoState({...promoState, files: files})
 	}
-	
-	//once, on mount, initiate intersection observer on #bottom-boundary element
-	useEffect(() => {
-		observer.observe(document.querySelector('#bottom-boundary'));
-		// TODO set up observer.unobserve
-	}, []);
 
 	return (
 		<div>
 			<NavigationState>
 				<Router>
-					<MainStyle>
+					<MainStyle setAllEvents={setAllEvents}>
 						<Switch>
 							<Route exact path='/'>
 								<Home allEvents={allEvents} />
@@ -168,6 +123,7 @@ const App = () => {
 								<Social />
 							</Route>
 							<Route path='/events/:eventName' render={(props) => <Event {...props} latLng={latLng} />} />
+							<Route path='/error' component={ErrorPage} />
 						</Switch>
 					</MainStyle>
 				</Router>
