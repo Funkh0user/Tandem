@@ -51,15 +51,14 @@ const history = useHistory()
 			}
       const newEvents = await response.json();
       newEvents.ok = true
-			console.log(typeof newEvents)
-			console.log(newEvents)
       setAllEvents(newEvents);
       return newEvents
 		} catch (error) {
 			console.log('There was an error getting events from the server: ', error);
 			return error
 		}
-	};
+  };
+  
 	//once, on mount, initiate intersection observer on #bottom-boundary element
 	useEffect(() => {
 		observer.observe(document.querySelector('#bottom-boundary'));

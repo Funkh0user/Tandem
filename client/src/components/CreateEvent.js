@@ -20,7 +20,6 @@ const CreateEvent = ({
 	handleSetLatLng,
 	handleFileUpload,
 }) => {
-	
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
 	const [step, setStep] = useState(0);
@@ -51,9 +50,9 @@ const CreateEvent = ({
 			credentials: 'same-origin',
 			body: data,
 		});
-		console.log(response)
+		console.log(response);
 		try {
-			//if there is a problem with posting the event, create an error object and pass it the response data then throw it 
+			//if there is a problem with posting the event, create an error object and pass it the response data then throw it
 			if (!response.ok) {
 				const errorObject = new Error();
 				errorObject.ok = response.ok;
@@ -149,12 +148,10 @@ const CreateEvent = ({
 		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
 		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
 		for (let i = 0; i < promoState.files.length; i++) {
-			////////
 			if (promoState.files[i].size > 1000000)
 				return handleSetFileUploadError(true);
 			formDataObject.append('file', promoState.files[i]);
 		}
-
 		//Send event to server.
 		saveEvent(formDataObject).then((result) => {
 			//if there is an error, redirect to error route and render info about the error.

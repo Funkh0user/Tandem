@@ -1,5 +1,7 @@
+/** @format */
+
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import CreateEvent from './components/CreateEvent';
 import MainStyle from './components/MainStyle';
 import Home from './components/Home';
@@ -7,7 +9,7 @@ import SearchEvents from './components/SearchEvents';
 import Social from './components/Social';
 import Event from './components/Event';
 import NavigationState from './components/context/navigationContext/NavigationState';
-import ErrorPage from './components/ErrorPage'
+import ErrorPage from './components/ErrorPage';
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
@@ -31,13 +33,12 @@ const App = () => {
 		files: null,
 	});
 
-
 	const handleSetAllEvents = (arrayOfUrls, eventState) => {
 		const myObject = {
 			...eventState,
-			latLng: JSON.stringify(eventState.latLng),// stringify this latLng object to match behavior of saving event to server as formData() object. 
-			picturesArr: arrayOfUrls
-		}
+			latLng: JSON.stringify(eventState.latLng), // stringify this latLng object to match behavior of saving event to server as formData() object.
+			picturesArr: arrayOfUrls,
+		};
 		setAllEvents([...allEvents, myObject]);
 	};
 
@@ -60,10 +61,10 @@ const App = () => {
 	};
 
 	//wrapper function for setting the lat and lng from leaflet maps
-	const  handleSetLatLng = (coordsObject) => {
-		console.log(coordsObject)
-		setPromoState({...promoState, latLng: coordsObject})
-	}
+	const handleSetLatLng = (coordsObject) => {
+		console.log(coordsObject);
+		setPromoState({ ...promoState, latLng: coordsObject });
+	};
 
 	//wrapper function for handling the react-quill rich-text input, specifically.
 	const handleDescriptionChange = (value) =>
@@ -91,9 +92,9 @@ const App = () => {
 
 	//this function handles saving image files to state.
 	const handleFileUpload = (files) => {
-		console.log(files)
-		setPromoState({...promoState, files: files})
-	}
+		console.log(files);
+		setPromoState({ ...promoState, files: files });
+	};
 
 	return (
 		<div>
@@ -122,7 +123,10 @@ const App = () => {
 							<Route path='/social'>
 								<Social />
 							</Route>
-							<Route path='/events/:eventName' render={(props) => <Event {...props} latLng={latLng} />} />
+							<Route
+								path='/events/:eventName'
+								render={(props) => <Event {...props} latLng={latLng} />}
+							/>
 							<Route path='/error' component={ErrorPage} />
 						</Switch>
 					</MainStyle>

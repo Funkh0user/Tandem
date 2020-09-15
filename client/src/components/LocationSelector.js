@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
 
 
-//TODO refactor component with new name and comments
 const LocationSelector = ({handleSetLatLng}) => {
 	const [coords, setCoords] = useState({ lat: '', lng: '', zoom: 2 });
 

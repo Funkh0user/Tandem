@@ -21,21 +21,6 @@ const Event = (props) => {
 	const [pictureArray, setPictureArray] = useState([]);
 
 	//here we define our fetch call to make get request from backend for single event of name in url parameters
-	// const getEvent = async (name) => {
-	// 	//name will be formatted to remove dashes on server before mongoDB search
-	// 	const event = await fetch(
-	// 		`http://localhost:3001/api/events/event/${name}`
-	// 	).then(async (result) => {
-	// 		const newData = await result.json();
-	// 		console.log(newData)
-	// 		//here we double check that the event name in the arguement to getEvent and the event returned from the server are the same before setting to state
-	// 		if (newData.name === eventName.split('-').join(' ')) {
-	// 			handleSetEventState(newData);
-	// 		}
-	// 		// return newData
-	// 	});
-	// };
-	//here we define our fetch call to make get request from backend for single event of name in url parameters
 	const getEvent = async (name) => {
 		//name will be formatted to remove dashes on server before mongoDB search
 		const response = await fetch(
