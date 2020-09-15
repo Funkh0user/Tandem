@@ -20,6 +20,7 @@ const CreateEvent = ({
 	handleSetLatLng,
 	handleFileUpload,
 }) => {
+	
 	const navigationContext = useContext(NavigationContext);
 	let history = useHistory();
 	const [step, setStep] = useState(0);
@@ -44,20 +45,30 @@ const CreateEvent = ({
 
 	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
-		const result = await fetch('http://localhost:3001/api/events', {
+		const response = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
 			body: data,
 		});
+		console.log(response)
 		try {
-			const newData = await result.json();
+			//if there is a problem with posting the event, create an error object and pass it the response data then throw it 
+			if (!response.ok) {
+				const errorObject = new Error();
+				errorObject.ok = response.ok;
+				errorObject.status = response.status;
+				errorObject.statusText = response.statusText;
+				errorObject.message = await response.text();
+				throw errorObject;
+			}
+			//otherwise, convert to json, add ok:true property and return
+			const newData = await response.json();
+			newData.ok = true;
 			return newData;
 		} catch (error) {
 			console.log('there was a problem saving this event.', error);
-			return {
-				error: 'There was a problem saving this event. Please try again.',
-			};
+			return error;
 		}
 	};
 
@@ -143,33 +154,24 @@ const CreateEvent = ({
 				return handleSetFileUploadError(true);
 			formDataObject.append('file', promoState.files[i]);
 		}
+
 		//Send event to server.
-		try {
-			saveEvent(formDataObject).then((result) => {
-				console.log(result);
-				//update react state with new event if there is no duplicate event error.
-				//TODO change this so that the server is not sending redundant information and the front end is not relying on it.
-				//TODO possibly change this back to relying on server response to set state
-				if (result.error) {
-					console.log(JSON.stringify(result));
-					return null;
-				} else if (!result.error) {
-					handleSetAllEvents(result.imageUrls, promoState);
-					// handleSetAllEvents(result);
-					//redirect to homepage
-					//TODO make sure promoState is cleared
-					history.push('/');
-					//if theres an error, log it.
-				} else {
-					console.log('there was an error saving the event.');
-					return null;
-				}
-			});
-			//if there is a mongoDB error, log it.
-		} catch (error) {
-			console.log(error);
-			return null;
-		}
+		saveEvent(formDataObject).then((result) => {
+			//if there is an error, redirect to error route and render info about the error.
+			if (!result.ok) {
+				history.push({
+					pathname: '/error',
+					state: {
+						error: result,
+					},
+				});
+			} else {
+				//otherwise, render the event to the hompage and reroute there.
+				handleSetAllEvents(result.imageUrls, promoState);
+				history.push('/');
+				//TODO make sure promoState is cleared
+			}
+		});
 	};
 
 	//anytime the window location changes, update the theme, via context.
