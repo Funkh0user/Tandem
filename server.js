@@ -4,10 +4,10 @@ const path = require("path")
 const app = express()
 const connectDB = require("./config/db")
 const cors = require("cors")
-
 //run mongoose connection methods, connect to mongoDB
 connectDB()
 
+console.log(process.env.node_env)
 //enable cross origin resource sharing while in development so frontend / webpack dev server and backend / express server running on different ports can communicate happily.
 app.use(cors())
 
@@ -27,11 +27,10 @@ app.use("/api/events", require("./routes/events"))
 app.use("/api/users", require("./routes/users"))
 
 
-
-// if(process.env.node_env === "production") {
-//     app.use(express.static("client/build"))
-//     app.get("*", (req, res) => {
-//         res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
-//     })
-// }
+if(process.env.node_env === "production") {
+    app.use(express.static("client/build"))
+    app.get("/*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"))
+    })
+}
 

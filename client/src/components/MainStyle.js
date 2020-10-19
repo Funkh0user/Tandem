@@ -61,7 +61,7 @@ const history = useHistory()
   
 	//once, on mount, initiate intersection observer on #bottom-boundary element
 	useEffect(() => {
-		observer.observe(document.querySelector('#bottom-boundary'));
+		// observer.observe(document.querySelector('#bottom-boundary'));
 		// TODO set up observer.unobserve
 	}, []);
   return (

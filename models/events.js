@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const eventSchema = new mongoose.Schema({
     name: String,
     type: String,
+    description: String,
+    picturesArr: Array,
     startDate: String,
     startTime: String,
     startDateTime: String,
@@ -12,8 +14,7 @@ const eventSchema = new mongoose.Schema({
     endTime: String,
     endDateTime: String,
     latLng: Object,
-    description: String,
-    picturesArr: Array
+    
 })
 
 const Event = mongoose.model("Event", eventSchema)
