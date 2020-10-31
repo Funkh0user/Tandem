@@ -15,16 +15,16 @@ const Nav = () => {
         setSelected(document.activeElement.name);
         //get the window location and set the theme color accordingly.
         switch (navigationContext.location) {
-          case 'http://localhost:3000/':
+          case ': https://tandem.api.evq.io/':
             colorSelector('blue');
             break;
-          case 'http://localhost:3000/create':
+          case ': https://tandem.api.evq.io/create':
             colorSelector('green');
             break;
-          case 'http://localhost:3000/search':
+          case ': https://tandem.api.evq.io/search':
             colorSelector('orange');
             break;
-          case 'http://localhost:3000/social':
+          case ': https://tandem.api.evq.io/social':
             colorSelector('purple');
             break;
           default:

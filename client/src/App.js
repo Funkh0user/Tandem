@@ -10,6 +10,7 @@ import Social from './components/Social';
 import Event from './components/Event';
 import NavigationState from './components/context/navigationContext/NavigationState';
 import ErrorPage from './components/ErrorPage';
+import Test from './components/Test';
 import './tailwind.generated.css';
 import 'react-quill/dist/quill.snow.css';
 import './App.css';
@@ -128,6 +129,7 @@ const App = () => {
 								render={(props) => <Event {...props} latLng={latLng} />}
 							/>
 							<Route path='/error' component={ErrorPage} />
+							<Route path='/testing/:testName' component={Test} />
 						</Switch>
 					</MainStyle>
 				</Router>

@@ -24,7 +24,7 @@ const Event = (props) => {
 	const getEvent = async (name) => {
 		//name will be formatted to remove dashes on server before mongoDB search
 		const response = await fetch(
-			`http://localhost:3001/api/events/event/${name}`
+			`/api/events/event/${name}`
 		);
 		try {
 			if (!response.ok) {

@@ -39,7 +39,7 @@ const history = useHistory()
 	const getEvents = async (numberOfEvents) => {
 		try {
 			const response = await fetch(
-				`http://localhost:3001/api/events/${numberOfEvents}`
+				`/api/events/${numberOfEvents}`
 			);
 			if(!response.ok) {
 				const errorObject = new Error()
@@ -61,7 +61,7 @@ const history = useHistory()
   
 	//once, on mount, initiate intersection observer on #bottom-boundary element
 	useEffect(() => {
-		// observer.observe(document.querySelector('#bottom-boundary'));
+		observer.observe(document.querySelector('#bottom-boundary'));
 		// TODO set up observer.unobserve
 	}, []);
   return (

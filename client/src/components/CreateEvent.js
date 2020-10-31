@@ -44,7 +44,7 @@ const CreateEvent = ({
 
 	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
-		const response = await fetch('http://localhost:3001/api/events', {
+		const response = await fetch('/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
