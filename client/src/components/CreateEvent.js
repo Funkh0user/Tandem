@@ -44,7 +44,8 @@ const CreateEvent = ({
 
 	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
-		const response = await fetch('/api/events', {
+		console.log('trigger saveevent')
+		const response = await fetch('https://tandem.api.evq.io/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
@@ -136,6 +137,8 @@ const CreateEvent = ({
 	};
 
 	const handleSubmit = (e) => {
+		console.log('trigger handleSubmit')
+		console.log(promoState)
 		//prevent default form behavior.
 		e.preventDefault();
 		// prepare FormData() object to send multipart form data with text fields and picture files to backend.
@@ -143,17 +146,24 @@ const CreateEvent = ({
 		const formDataObject = new FormData();
 		for (let pair of keyValuePairs) {
 			formDataObject.append(pair[0], pair[1]);
+			console.log('loop1')
 		}
+
 		//overwrite latlng field with properly encoded (stringified) JSON object (multipart form data cannot accept complex data types)
 		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
 		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
 		for (let i = 0; i < promoState.files.length; i++) {
-			if (promoState.files[i].size > 1000000)
-				return handleSetFileUploadError(true);
+			console.log('loop2')
+			// if (promoState.files[i].size > 1000000)
+			// 	return handleSetFileUploadError(true);
+
 			formDataObject.append('file', promoState.files[i]);
 		}
+
+
 		//Send event to server.
 		saveEvent(formDataObject).then((result) => {
+
 			//if there is an error, redirect to error route and render info about the error.
 			if (!result.ok) {
 				history.push({
