@@ -45,7 +45,7 @@ const CreateEvent = ({
 	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
 		console.log('trigger saveevent')
-		const response = await fetch('https://tandem.api.evq.io/api/events', {
+		const response = await fetch('api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
