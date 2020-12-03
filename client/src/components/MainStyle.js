@@ -39,7 +39,7 @@ const history = useHistory()
 	const getEvents = async (numberOfEvents) => {
 		try {
 			const response = await fetch(
-				`/api/events/${numberOfEvents}`
+				`http://localhost:3001/api/events/${numberOfEvents}`
 			);
 			if(!response.ok) {
 				const errorObject = new Error()

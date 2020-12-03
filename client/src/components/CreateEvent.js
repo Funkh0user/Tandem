@@ -44,7 +44,7 @@ const CreateEvent = ({
 
 	//A function that posts event data to the server.
 	const saveEvent = async (data) => {
-		const response = await fetch('/api/events', {
+		const response = await fetch('http://localhost:3001/api/events', {
 			method: 'POST',
 			mode: 'cors',
 			credentials: 'same-origin',
@@ -148,8 +148,8 @@ const CreateEvent = ({
 		formDataObject.set('latLng', JSON.stringify(promoState.latLng));
 		//FileList object has no forEach method, so doing it manually...append each file to our formDataObject object...(formData() )
 		for (let i = 0; i < promoState.files.length; i++) {
-			if (promoState.files[i].size > 1000000)
-				return handleSetFileUploadError(true);
+			// if (promoState.files[i].size > 1000000)
+			// 	return handleSetFileUploadError(true);
 			formDataObject.append('file', promoState.files[i]);
 		}
 		//Send event to server.
