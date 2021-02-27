@@ -45,14 +45,13 @@ const storage = multer.diskStorage({
 	},
 });
 
-//initiate multer middleware for handling enctype: multipart-form
+//initiate multer middleware for handling enctype: multipart-form data
 const upload = multer({
 	storage: storage,
 	limits: {
 		filesize: 1028 * 1028,
 	},
 	//TODO improve error message / validation for number of pictures and size of pictures use fileFilter: (req, file, cb )=> {}
-
 });
 
 //@route    api/events
@@ -75,7 +74,7 @@ router.post('/', upload.array('file', 4), async (req, res, next) => {
 		return imageLocationOnS3.Location;
 	});
 
-	//Handle our array of promises returned from S3 with Promise.All and save event to mongoDB in the callback.
+	//Handle our array of promises returned from S3 with Promise.all and save event to mongoDB in the callback.
 	Promise.all(uploadedImageData).then(async (imageUrls) => {
 		console.log('heres the result of promise.all', imageUrls);
 
